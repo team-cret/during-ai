@@ -2,20 +2,9 @@
 class SentimentAnalyzerPreprocessor:
     def __init__(self) -> None:
         self.setSentiments()
-        self.setEmbeddingModel()
-        self.embeddingSentiments()
-
-    def setEmbeddingModel(self):
-        # embeddingModel 이름
-        self.embeddingModelNames = [
-            'openai_embedding_model',
-        ]
-
-        # embeddingModel 이름 : Model객체
-        # Model객체는 method 통일을 위해 각자의 파일에서 API화 되어 있음
-        self.embeddingModels = {
-            str(self.embeddingModelNames[0]) : 'a',
-        }
+        # self.setEmbeddingModel()
+        # self.embeddingSentiments()
+        pass
 
     def setSentiments(self):
         # 현재 MVP에 해당하는 감정 종류들
@@ -45,6 +34,18 @@ class SentimentAnalyzerPreprocessor:
             '포옹하기' : 8,
             '뽀뽀하기' : 9,
             '쓰다듬기' : 10,
+        }
+    
+    def setEmbeddingModel(self):
+        # embeddingModel 이름
+        self.embeddingModelNames = [
+            'openai_embedding_model',
+        ]
+
+        # embeddingModel 이름 : Model객체
+        # Model객체는 method 통일을 위해 각자의 파일에서 API화 되어 있음
+        self.embeddingModels = {
+            str(self.embeddingModelNames[0]) : 'a',
         }
     
     def embeddingSentiments(self):

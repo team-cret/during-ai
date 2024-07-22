@@ -4,7 +4,7 @@ class KeywordAnalyzer:
         self.sentiments = sentiments
         self.sentimentIds = sentimentIds
         
-        self.exactSentimentMatching()
+        self.setExactMatchingDictionary()
 
     def analyzeSentimentByKeyword(self, chatData):
         if chatData in self.exactMatchingDictionary:
