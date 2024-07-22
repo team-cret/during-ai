@@ -1,16 +1,17 @@
 from transformers import pipeline
 
 class HuggingfaceFacebookBartLargeMnliAnalyzer:
-    def __init__(self) -> None:
+    def __init__(self, sentiments) -> None:
+        self.sentiments = sentiments
         self.classifier = pipeline(
             model='facebook/bart-large-mnli',
             device_map='auto',
         )
 
-    def analyzeSentimentByChat(self, sentiments, chatData):
+    def analyzeSentimentByChat(self, chatData):
         result = self.classifier(
             chatData,
-            candidate_labels=sentiments,
+            candidate_labels=self.sentiments,
             multi_label=True
         )
 

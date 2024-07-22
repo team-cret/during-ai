@@ -1,9 +1,10 @@
+from Analyzers.openai_embedding_model import OpenAIEmbeddingModel
 
 class SentimentAnalyzerPreprocessor:
     def __init__(self) -> None:
         self.setSentiments()
-        # self.setEmbeddingModel()
-        # self.embeddingSentiments()
+        self.setEmbeddingModel()
+        self.embeddingSentiments()
         pass
 
     def setSentiments(self):
@@ -45,7 +46,7 @@ class SentimentAnalyzerPreprocessor:
         # embeddingModel 이름 : Model객체
         # Model객체는 method 통일을 위해 각자의 파일에서 API화 되어 있음
         self.embeddingModels = {
-            str(self.embeddingModelNames[0]) : 'a',
+            str(self.embeddingModelNames[0]) : OpenAIEmbeddingModel(0),
         }
     
     def embeddingSentiments(self):
@@ -58,5 +59,5 @@ class SentimentAnalyzerPreprocessor:
             # 각 감정별로 현재 모델로 Embedding값 생성
             self.embededValuesOfSentiments[embeddingModelName] = {}
             for sentiment in self.sentiments:
-                embededVector = embeddingModel.embeddingText()
+                embededVector = embeddingModel.getEmbeddingVector(sentiment)
                 self.embededValuesOfSentiments[embeddingModelName][sentiment] = embededVector
