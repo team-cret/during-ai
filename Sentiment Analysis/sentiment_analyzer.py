@@ -1,5 +1,6 @@
 import sentiment_analysis_keyword_analyzer as kwaz
 import sentiment_analyzer_preprocessor as ppcs
+from Analyzers import huggingface_facebook_bart_large_mnli
 
 class AutoSentimentAnalyzer:
     def __init__(self) -> None:
@@ -12,8 +13,14 @@ class AutoSentimentAnalyzer:
     # 가능한 Analyzer Setting
     def setAnalyzers(self):
         self.analyzer = {
-            'huggingface_facebook_bart_large_mnli' : {'type' : 'classification', 'model' : 'a'},
-            'openai_embedding_model' : {'type' : 'embedding', 'model' : 'a'},
+            'huggingface_facebook_bart_large_mnli' : {
+                'type' : 'classification', 
+                'model' : 'a'
+            },
+            'openai_embedding_model' : {
+                'type' : 'embedding', 
+                'model' : 'a'
+            },
         }
 
     # Chat 한개를 받아서 그 Chat에 대한 감정을 분석해주는 함수
@@ -30,5 +37,5 @@ class AutoSentimentAnalyzer:
 
     # 현재 최신 버전의 Analyzer를 선택해주는 함수
     def selectCurrentAnalyzer(self):
-        self.analyzerName = 'huggingface_facebook_bart-large-mnli'
+        self.analyzerName = 'huggingface_facebook_bart_large_mnli'
         self.currentAnalyzer = self.analyzer[self.analyzerName]

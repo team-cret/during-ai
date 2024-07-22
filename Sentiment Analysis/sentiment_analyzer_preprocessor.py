@@ -8,7 +8,7 @@ class SentimentAnalyzerPreprocessor:
     def setEmbeddingModel(self):
         # embeddingModel 이름
         self.embeddingModelNames = [
-            'OpenAI_Embedding_Model',
+            'openai_embedding_model',
         ]
 
         # embeddingModel 이름 : Model객체
