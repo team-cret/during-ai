@@ -1,4 +1,4 @@
-from Analyzers.openai_embedding_model import OpenAIEmbeddingModel
+from .Analyzers.openai_embedding_model import OpenAIEmbeddingModel
 
 class SentimentAnalyzerPreprocessor:
     def __init__(self) -> None:

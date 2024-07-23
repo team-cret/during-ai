@@ -1,12 +1,12 @@
-import sentiment_analysis_keyword_analyzer as kwaz
-import sentiment_analyzer_preprocessor as ppcs
-from Analyzers.huggingface_facebook_bart_large_mnli import HuggingfaceFacebookBartLargeMnliAnalyzer
-from Analyzers.openai_embedding_model import OpenAIEmbeddingModel
+from .sentiment_analysis_keyword_analyzer import KeywordAnalyzer
+from .sentiment_analyzer_preprocessor import SentimentAnalyzerPreprocessor
+from .Analyzers.huggingface_facebook_bart_large_mnli import HuggingfaceFacebookBartLargeMnliAnalyzer
+from .Analyzers.openai_embedding_model import OpenAIEmbeddingModel
 
 class AutoSentimentAnalyzer:
     def __init__(self) -> None:
-        self.preprocessor = ppcs.SentimentAnalyzerPreprocessor()
-        self.keywordAnalyzer = kwaz.KeywordAnalyzer(self.preprocessor.sentiments, self.preprocessor.sentimentIds)
+        self.preprocessor = SentimentAnalyzerPreprocessor()
+        self.keywordAnalyzer = KeywordAnalyzer(self.preprocessor.sentiments, self.preprocessor.sentimentIds)
 
         self.setAnalyzers()
         self.selectCurrentAnalyzer()
