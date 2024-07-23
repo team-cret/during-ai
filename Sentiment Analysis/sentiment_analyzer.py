@@ -35,11 +35,11 @@ class AutoSentimentAnalyzer:
             return sentiment
 
         if self.currentAnalyzer['type'] == 'classification':
-            sentiment = self.currentAnalyzer['model'].analyzeSentimentByChat(chatData)
+            sentiment, similarity = self.currentAnalyzer['model'].analyzeSentimentByChat(chatData)
         elif self.currentAnalyzer['type'] == 'embedding':
-            sentiment = self.currentAnalyzer['model'].analyzeSentimentByChat(chatData)
+            sentiment, similarity = self.currentAnalyzer['model'].analyzeSentimentByChat(chatData)
 
-        return sentiment
+        return (sentiment, self.preprocessor.sentimentIds[sentiment])
 
 # analyzer 동작 확인 O
 # analyzer = AutoSentimentAnalyzer()

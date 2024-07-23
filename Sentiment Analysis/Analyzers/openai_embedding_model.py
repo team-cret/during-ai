@@ -4,6 +4,7 @@ class OpenAIEmbeddingModel:
     def __init__(self, embededSentiments):
         self.embeddingModel = OpenAIEmbeddings()
         self.embededSentiments = embededSentiments
+        self.threshold = 0.5
 
     # sentiment의 
     def analyzeSentimentByChat(self, chatData):
@@ -13,11 +14,11 @@ class OpenAIEmbeddingModel:
 
         for sentiment, vector in self.embededSentiments.items():
             similarity = self.calculateSimilarity(embededChatDataVector, vector)
-            if similarity > mostSimilarity:
+            if similarity > mostSimilarity and similarity > self.threshold:
                 mostSimilarity = similarity
                 mostSimilarSentiment = sentiment
         
-        return [mostSimilarSentiment, mostSimilarity]
+        return (mostSimilarSentiment, mostSimilarity)
     
     def getEmbeddingVector(self, chatData):
         return self.embeddingModel.embed_query(chatData)

@@ -8,7 +8,7 @@ class KeywordAnalyzer:
 
     def analyzeSentimentByKeyword(self, chatData):
         if chatData in self.exactMatchingDictionary:
-            return self.exactMatchingDictionary[chatData]
+            return (self.exactMatchingDictionary[chatData], self.sentimentIds[self.exactMatchingDictionary[chatData]])
         return False
     
     def setExactMatchingDictionary(self):
