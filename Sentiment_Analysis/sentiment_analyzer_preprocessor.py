@@ -1,6 +1,7 @@
 from .Analyzers.openai_embedding_model import OpenAIEmbeddingModel
 from .Analyzers.upstage_embedding_model import UpstageEmbeddingModel
 from .Analyzers.huggingface_jhgan_ko_sroberta_multitask_model import HuggingfaceJhganKoSrobertaMultitaskEmbeddingModel
+from .Analyzers.gemini_embedding_model import GeminiEmbeddingModel
 
 class SentimentAnalyzerPreprocessor:
     def __init__(self) -> None:
@@ -45,6 +46,7 @@ class SentimentAnalyzerPreprocessor:
             'openai_embedding_model',
             'upstage_embedding_model',
             'huggingface_jhgan_ko_sroberta_multitask_model',
+            'gemini_embedding_model',
         ]
 
         # embeddingModel 이름 : Model객체
@@ -53,6 +55,7 @@ class SentimentAnalyzerPreprocessor:
             str(self.embeddingModelNames[0]) : OpenAIEmbeddingModel(0),
             str(self.embeddingModelNames[1]) : UpstageEmbeddingModel(0),
             str(self.embeddingModelNames[2]) : HuggingfaceJhganKoSrobertaMultitaskEmbeddingModel(0),
+            str(self.embeddingModelNames[3]) : GeminiEmbeddingModel(0),
         }
     
     def embeddingSentiments(self):

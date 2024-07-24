@@ -5,6 +5,7 @@ class ConfigSettings(BaseSettings):
     openai_api_key: str
     huggingface_api_key: str
     upstage_api_key: str
+    google_api_key: str
 
     model_config = SettingsConfigDict(
         env_file='default.env',
@@ -15,3 +16,5 @@ class ConfigSettings(BaseSettings):
         os.environ['HF_TOKEN'] = self.huggingface_api_key
         os.environ['OPENAI_API_KEY'] = self.openai_api_key
         os.environ['UPSTAGE_API_KEY'] = self.upstage_api_key
+        os.environ['GOOGLE_API_KEY'] = self.google_api_key
+

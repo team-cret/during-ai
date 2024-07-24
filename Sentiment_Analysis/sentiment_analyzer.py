@@ -4,6 +4,7 @@ from .Analyzers.huggingface_facebook_bart_large_mnli import HuggingfaceFacebookB
 from .Analyzers.openai_embedding_model import OpenAIEmbeddingModel
 from .Analyzers.upstage_embedding_model import UpstageEmbeddingModel
 from .Analyzers.huggingface_jhgan_ko_sroberta_multitask_model import HuggingfaceJhganKoSrobertaMultitaskEmbeddingModel
+from .Analyzers.gemini_embedding_model import GeminiEmbeddingModel
 
 class AutoSentimentAnalyzer:
     def __init__(self) -> None:
@@ -14,7 +15,7 @@ class AutoSentimentAnalyzer:
         self.selectCurrentAnalyzer()
     
     def selectCurrentAnalyzer(self):
-        self.analyzerName = 'huggingface_jhgan_ko_sroberta_multitask_model'
+        self.analyzerName = 'gemini_embedding_model'
         self.currentAnalyzer = self.analyzer[self.analyzerName]
 
     def setAnalyzers(self):
@@ -34,7 +35,11 @@ class AutoSentimentAnalyzer:
             'huggingface_jhgan_ko_sroberta_multitask_model' : {
                 'type' : 'embedding', 
                 'model' : HuggingfaceJhganKoSrobertaMultitaskEmbeddingModel(self.preprocessor.embededValuesOfSentiments['huggingface_jhgan_ko_sroberta_multitask_model'])
-            }
+            },
+            'gemini_embedding_model' : {
+                'type' : 'embedding', 
+                'model' : GeminiEmbeddingModel(self.preprocessor.embededValuesOfSentiments['gemini_embedding_model'])
+            } ,
         }
 
     def analyzeSentimentByChat(self, chatData):
