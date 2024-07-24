@@ -1,4 +1,4 @@
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 import numpy as np
 
 class HuggingfaceJhganKoSrobertaMultitaskEmbeddingModel:
@@ -24,4 +24,5 @@ class HuggingfaceJhganKoSrobertaMultitaskEmbeddingModel:
         return self.embeddingModel.embed_query(chatData)
     
     def calculateSimilarity(self, v1, v2):
-        return np.dot(v1, v2)
+        # return np.dot(v1, v2)
+        return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
