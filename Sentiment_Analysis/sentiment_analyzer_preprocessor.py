@@ -1,4 +1,5 @@
 from .Analyzers.openai_embedding_model import OpenAIEmbeddingModel
+from .Analyzers.upstage_embedding_model import UpstageEmbeddingModel
 
 class SentimentAnalyzerPreprocessor:
     def __init__(self) -> None:
@@ -41,12 +42,14 @@ class SentimentAnalyzerPreprocessor:
         # embeddingModel 이름
         self.embeddingModelNames = [
             'openai_embedding_model',
+            'upstage_embedding_model',
         ]
 
         # embeddingModel 이름 : Model객체
         # Model객체는 method 통일을 위해 각자의 파일에서 API화 되어 있음
         self.embeddingModels = {
             str(self.embeddingModelNames[0]) : OpenAIEmbeddingModel(0),
+            str(self.embeddingModelNames[1]) : UpstageEmbeddingModel(0),
         }
     
     def embeddingSentiments(self):

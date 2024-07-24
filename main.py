@@ -9,8 +9,7 @@ class chatData(BaseModel):
 
 app = FastAPI()
 settings = ConfigSettings()
-os.environ['HF_TOKEN'] = settings.huggingface_api_key
-os.environ['OPENAI_API_KEY'] = settings.openai_api_key
+settings.setAPIKeys()
 
 sentimentAnalyzer = sentiment_analyzer.AutoSentimentAnalyzer()
 
