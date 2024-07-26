@@ -22,6 +22,6 @@ gomduChatGenerator = next_gomdu_chat_generator.NextGomduChatGenerator()
 def analyzeSentiment(userData: chatData):
     return sentimentAnalyzer.analyzeSentimentByChat(userData.message)
 
-@app.pos("/GomduNextChat")
+@app.post("/GomduNextChat")
 def generateNextGomduChat(userData: chatData):
-    return gomduChatGenerator.generateNextGomduChat(userData)
+    return gomduChatGenerator.generateNextGomduChat(userData.message)

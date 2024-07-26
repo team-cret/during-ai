@@ -1,39 +1,49 @@
+from Gomdu_Chat.LLM_Models.gemini import GeminiLLMModel
 
 class NextGomduChatGenerator:
     def __init__(self) -> None:
-        pass
+        self.setLLMModel()
+        self.selectLLMModel()
     
     def setLLMModel(self):
-        self.candidateLLMModelNames = [
+        self.LLMModelNames = [
             'gemini',
             'openai',
             'llama3',
         ]
 
-        self.candidateLLMModels = {
-            self.candidateLLMModelNames[0] : 0,
-            self.candidateLLMModelNames[1] : 0,
-            self.candidateLLMModelNames[2] : 0,
+        self.embeddingModelNames = [
+            'gemini',
+            'openai',
+            'llama3',
+        ]
+
+        self.LLMModels = {
+            self.LLMModelNames[0] : GeminiLLMModel(),
+            self.LLMModelNames[1] : 0,
+            self.LLMModelNames[2] : 0,
         }
 
-        self.candidateEmbeddingModels = {
-            self.candidateLLMModelNames[0] : 0,
-            self.candidateLLMModelNames[1] : 0,
-            self.candidateLLMModelNames[2] : 0,
+        self.embeddingModels = {
+            self.embeddingModelNames[0] : 0,
+            self.embeddingModelNames[1] : 0,
+            self.embeddingModelNames[2] : 0,
         }
 
     def selectLLMModel(self):
-        self.currentLLMModelName = 'gemini'
-        self.currentLLMModel = self.candidateLLMModelNames[self.currentLLMModelName]
-        self.currentEmbeddingModel = self.candidateEmbeddingModels[self.currentLLMModelName]
+        self.selectedLLMModelName = 'gemini'
+        self.selectedEmbeddingModelName = 'gemini'
+        self.selectedLLMModel = self.LLMModels[self.selectedLLMModelName]
+        self.selectedEmbeddingModel = self.embeddingModels[self.selectedEmbeddingModelName]
 
-    def generateNextGomduChat(self, userData):
+    def generateNextGomduChat(self, userData: str):
+        print(userData)
         memory = self.getMemoryData()
-        embeddedVector = self.currentEmbeddingModel.getEmbeddingVector(userData['message'])
-        retrievedData = self.retrieveChatDataFromVectorDB(embeddedVector)
+        # embeddedVector = self.currentEmbeddingModel.getEmbeddingVector(userData['message'])
+        # retrievedData = self.retrieveChatDataFromVectorDB(embeddedVector)
         userPrompt = self.generatePrompt()
-        generatedResult = self.currentLLMModel.generateText(userPrompt)
-        return generatedResult
+        generatedResult = self.selectedLLMModel.generateText(userData)
+        return generatedResult.text
 
     def getMemoryData(self,):
         pass
