@@ -1,5 +1,5 @@
 
-class DuringVectorDBManger:
+class VectorDB:
     def __init__(self) -> None:
         pass
 

@@ -1,0 +1,6 @@
+from enum import Enum
+
+class ServiceConfig(Enum):
+    SENTIMENT_ANALYZER_V0_TYPE = ''
+    SENTIMENT_ANALYZER_V0_EMBEDDING_MODEL = ''
+    SENTIMENT_ANALYSIS_V0_CLASSIFICATION_MODEL = ''
