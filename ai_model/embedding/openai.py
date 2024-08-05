@@ -1,4 +1,4 @@
-from text_embedding import TextEmbedding
+from .text_embedding import TextEmbedding
 from langchain_openai import OpenAIEmbeddings
 
 class OpenAITextEmbedding(TextEmbedding):

@@ -1,4 +1,4 @@
-from text_embedding import TextEmbedding
+from .text_embedding import TextEmbedding
 import google.generativeai as genai
 import os
 
