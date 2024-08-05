@@ -1,13 +1,5 @@
-
-import sys
-import os
-
-dir_path = os.path.abspath(os.path.dirname('during-ai'))
-sys.path.insert(0, dir_path)
-print(dir_path)
 from setting.config import Config
 from setting.model_config import ModelConfig
-from setting.api_key_setting import APIKeySetting
 from ai_model.embedding import (
     gemini,
     ko_sroberta,
@@ -16,8 +8,6 @@ from ai_model.embedding import (
 )
 
 def test_embedding_model():
-    APIKeySetting().setAPIKeys()
-
     embedding_models = [
         gemini.GeminiTextEmbedding(
             ModelConfig.GEMINI_EMBEDDING_MODEL.value,
@@ -37,4 +27,3 @@ def test_embedding_model():
         vector = model.embed_text(text)
         print(len(vector), end=' : ')
         print(*vector[:3])
-test_embedding_model()
