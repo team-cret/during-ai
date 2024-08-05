@@ -1,10 +1,13 @@
+from .text_classification import TextClassification
+from setting.model_config import ModelConfig
+from data import sentiments
 from transformers import pipeline
 
-class BartLargeMnli:
-    def __init__(self, sentiments, model_name) -> None:
-        self.sentiments = sentiments
+class BartLargeMnliTextClassification(TextClassification):
+    def __init__(self) -> None:
+        self.sentiments = sentiments.sentiments
         self.classifier = pipeline(
-            model=model_name,
+            model=ModelConfig.BART_LARGE_MNLI_CLASSIFICATION_MODEL.value,
             device_map='auto',
         )
 

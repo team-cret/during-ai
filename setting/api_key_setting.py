@@ -13,9 +13,8 @@ class APIKeySetting(BaseSettings):
         env_file_encoding=Config.ENCODING_TYPE.value,
     )
 
-    def setAPIKeys(self):
+    def set_api_key(self):
         os.environ[Config.HF_TOKEN.value] = self.huggingface_api_key
         os.environ[Config.OPENAI_API_KEY.value] = self.openai_api_key
         os.environ[Config.UPSTAGE_API_KEY.value] = self.upstage_api_key
         os.environ[Config.GOOGLE_API_KEY.value] = self.google_api_key
-

@@ -10,10 +10,7 @@ class ClassificationModelTester:
 
     def setup_for_test(self) -> None:
         self.classification_models = [
-            bart_large_mnli.BartLargeMnli(
-                sentiments.sentiments,
-                ModelConfig.BART_LARGE_MNLI_CLASSIFICATION_MODEL.value,
-            ),
+            bart_large_mnli.BartLargeMnliTextClassification(),
         ]
 
     def test(self):

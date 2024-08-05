@@ -6,11 +6,14 @@ class Tester:
         self.setup_for_test()
     
     def setup_for_test(self):
-        from unit import embedding_model
-        from unit import classification_model
+        from unit.embedding_model import EmbeddingModelTester
+        from unit.classification_model import ClassificationModelTester
+        from services.sentiment_analyzer import SentimentAnalyzerTester
+
         self.test_setup = {
-            'embedding_model'      : [False, embedding_model.EmbeddingModelTester()],
-            'classification_model' : [False, classification_model.ClassificationModelTester()],
+            'embedding_model'      : [False, EmbeddingModelTester()],
+            'classification_model' : [False, ClassificationModelTester()],
+            'sentiment_analysis'   : [True, SentimentAnalyzerTester()],
         }
 
     def test(self):
