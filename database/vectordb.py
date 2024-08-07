@@ -9,6 +9,6 @@ class VectorDB:
     def removeDataByChatId(self, groupId, chatId):
         pass
 
-    def retrieveDataBySimilarity(self, groupId, userData):
-        pass
+    def retrieve_data(self, groupId, userData):
+        return ['', '', '', '', '']
     

@@ -9,5 +9,5 @@ class DB:
     def loadChatDataFromPoint(self, groupId, point):
         pass
 
-    def getGomduHistory(self, groupId, memberId):
-        pass
+    def get_gomdu_history(self, groupId, memberId, size):
+        return []
