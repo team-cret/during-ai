@@ -10,7 +10,7 @@ class GeminiTextGenerator:
     def generate_text(self, user_prompt:str, history:list[str], system_prompt:str) -> str:
         return self._generative_model.generate_content([system_prompt] + user_prompt).text
     
-    def generate_text_by_chat_bot(self, user_prompt:str, history:list[str], system_prompt:str) -> str:
+    def generate_text_by_chat_bot(self, user_prompt:str, history:list[str], system_prompt:str, is_stream:bool = False) -> str:
         history = [{
             'role' : 'user',
             'text' : system_prompt,
@@ -29,4 +29,4 @@ class GeminiTextGenerator:
                 })
 
         self.chat = self._generative_model.start_chat(history=processed_history)
-        return self.chat.send_message(user_prompt).text다음
+        return self.chat.send_message(user_prompt, stream=is_stream).text
