@@ -14,12 +14,15 @@ class Tester:
         print('success SentimentAnalyzerTester')
         from services.gomdu_chat_generator import GomduChatGeneratorTester
         print('success GomduChatGeneratorTester')
+        from services.report_generator import ReportGeneratorTester
+        print('success ReportGeneratorTester')
 
         self.test_setup = {
             'embedding_model'      : [False, EmbeddingModelTester()],
             'classification_model' : [False, ClassificationModelTester()],
             'sentiment_analysis'   : [False, SentimentAnalyzerTester()],
-            'chat_generator'       : [True, GomduChatGeneratorTester()],
+            'chat_generator'       : [False, GomduChatGeneratorTester()],
+            'report_generator'     : [True, ReportGeneratorTester()],
         }
         print('successfully end setup for test')
 
