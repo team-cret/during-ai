@@ -45,18 +45,3 @@ class StatisticalAnalyzer:
             current_chat = self.couple_chat[i]
         
         self.statistical_report.average_reply_term = time_period / len(self.couple_chat)
-
-            
-
-    
-    '''
-    response_time_zone: list = [0 for _ in range(round(24/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
-    concurrent_time_zone: list = [0 for _ in range(round(24/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
-    frequently_used_emotion: list = [('', 0) for _ in range(6)]
-    average_reply_term:float = 0
-    
-    frequently_talked_topic: list = []
-    frequency_of_affection: float = 0
-    number_of_love_words:int = 0
-    sweetness_score:float = 0
-    '''

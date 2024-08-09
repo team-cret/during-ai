@@ -5,7 +5,8 @@ from transformers import pipeline
 
 class BartLargeMnliTextClassification(TextClassification):
     def __init__(self) -> None:
-        self.sentiments = sentiments.sentiments
+        self.sentiments = [value['sentiment'] for value in sentiments.sentiments.values()]
+        
         self.classifier = pipeline(
             model=ModelConfig.BART_LARGE_MNLI_CLASSIFICATION_MODEL.value,
             device_map='auto',

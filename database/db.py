@@ -43,8 +43,8 @@ class DB:
                         'message' : a[f+2+message_start+1:],
                     })
                 except Exception:
-                    print(line)
-                    print(Exception)
+                    # print(line)
+                    # print(Exception)
                     continue
         
         print('loaded data : ', len(loaded_data))

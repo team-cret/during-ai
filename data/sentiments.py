@@ -1,29 +1,18 @@
 
-# 현재 MVP에 해당하는 감정 종류들
-sentiments = [
-    '웃기', # 기쁨
-    '화내기', # 화남
-    '사랑해', # 사랑표현?
-    '부끄러움', # 
-    '응원하기', # 
-    '안아줘요', # 힘듬, 우울함
-    '손 흔들기', # 반가움, 
-    '피곤함',
-    '포옹하기', # 다녀올게
-    '뽀뽀하기', # 뽀뽀
-    '쓰다듬기', # 수고했어, 잘했어, 귀여워
-]
-
-sentimentIds = {
-    '웃기' : 0,
-    '화내기' : 1,
-    '사랑해' : 2,
-    '부끄러움' : 3,
-    '응원하기' : 4,
-    '안아줘요' : 5,
-    '손 흔들기': 6,
-    '피곤함' : 7,
-    '포옹하기' : 8,
-    '뽀뽀하기' : 9,
-    '쓰다듬기' : 10,
+sentiments = {
+    0 : {'sentiment' : '웃기'},
+    1 : {'sentiment' : '화내기'},
+    2 : {'sentiment' : '사랑해'},
+    3 : {'sentiment' : '부끄러움'},
+    4 : {'sentiment' : '응원하기'},
+    5 : {'sentiment' : '안아줘요'},
+    6 : {'sentiment' : '손 흔들기'},
+    7 : {'sentiment' : '피곤함'},
+    8 : {'sentiment' : '포옹하기'},
+    9 : {'sentiment' : '뽀뽀하기'},
+    10: {'sentiment' : '쓰다듬기'},
 }
+
+sentiment_to_id = {}
+for key, value in sentiments.items():
+    sentiment_to_id[value['sentiment']] = key
