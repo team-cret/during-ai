@@ -1,13 +1,14 @@
 
 from pydantic import BaseModel
-import datetime
+from datetime import datetime
 
 class GomduChat(BaseModel):
+    chat_id: int = 0
+    message: str = ''
+    history_id: str = ''
     user_id: str = ''
     couple_id: str = ''
-    history_id: str = ''
-    message: str = ''
-    timestamp: int = 0
+    timestamp: datetime = datetime.now()
 
 class CoupleChat(BaseModel):
     chat_id: int = 0
@@ -15,7 +16,7 @@ class CoupleChat(BaseModel):
     message: str = ''
     user_id: str = ''
     couple_id: str = ''
-    timestamp: datetime.datetime = datetime.datetime.now()
+    timestamp: datetime = datetime.now()
 
 class Sentiment(BaseModel):
     sentiment: str = ''
