@@ -1,5 +1,7 @@
-from ai_model.classification.bart_large_mnli import BartLargeMnliTextClassification
 from ai_model.classification.text_classification import TextClassification
+from ai_model.classification.bart_large_mnli import BartLargeMnliTextClassification
+from ai_model.classification.mdeberta_xnli import MDeBertaXnliTextClassification
+from ai_model.classification.pogjin_roberta import PongjinRobertaTextClassification
 
 from model.ai_model import AIModelInfo
 
@@ -11,6 +13,8 @@ class ClassificationModelTester:
     def setup_for_test(self) -> None:
         self.classification_models = {
             'bart_large_mnli' : BartLargeMnliTextClassification(AIModelInfo()),
+            'mdeberta_xnli' : MDeBertaXnliTextClassification(AIModelInfo()),
+            'pongjin_roberta' : PongjinRobertaTextClassification(AIModelInfo()),
         }
     
     def setup_test_contents(self) -> None:

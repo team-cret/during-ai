@@ -28,10 +28,10 @@ class Tester:
         #---------------------------------------------------------------------------#
         self.test_setup = {
             'embedding_model'      : [False, EmbeddingModelTester()],
-            'classification_model' : [False, ClassificationModelTester()],
+            'classification_model' : [True, ClassificationModelTester()],
             'sentiment_analysis'   : [False, SentimentAnalyzerTester()],
             'chat_generator'       : [False, GomduChatGeneratorTester()],
-            'report_generator'     : [True, ReportGeneratorTester()],
+            'report_generator'     : [False, ReportGeneratorTester()],
         }
         print('successfully end setup for test')
         #---------------------------------------------------------------------------#

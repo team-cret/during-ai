@@ -13,11 +13,11 @@ class ChatGenerator:
         self.cached_memory = deque(maxlen=ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value)
     
     def set_generator(self) -> None:
-        module = importlib.import_module(f'ai_model.generation.{ServiceConfig.GOMDU_CHAT_LLM_MODEL.value}')
+        module = importlib.import_module(f'ai_model.generation.{ServiceConfig.GOMDU_CHAT_LLM_MODULE.value}')
         llm_class = getattr(module, ServiceConfig.GOMDU_CHAT_LLM_CLASS.value)
         self.llm_model = llm_class()
 
-        module = importlib.import_module(f'ai_model.embedding.{ServiceConfig.GOMDU_CHAT_EMBEDDING_MODEL.value}')
+        module = importlib.import_module(f'ai_model.embedding.{ServiceConfig.GOMDU_CHAT_EMBEDDING_MODULE.value}')
         embedding_class = getattr(module, ServiceConfig.GOMDU_CHAT_EMBEDDING_CLASS.value)
         self.embedding_model = embedding_class(AIModelInfo(
             model_name=ServiceConfig.GOMDU_CHAT_EMBEDDING_MODEL_NAME.value

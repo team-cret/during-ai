@@ -1,12 +1,19 @@
-import importlib
-from setting.service_config import ServiceConfig
-from .keyword_analyzer import KeywordAnalyzer
-from model.data_model import CoupleChat, Sentiment
-import numpy as np
 from .sentiment_analyzer import SentimentAnalyzer
+
 from ai_model.embedding.text_embedding import TextEmbedding
+
 from data.sentiments import sentiment_to_id, sentiments
+
 from model.ai_model import AIModelInfo
+from model.data_model import CoupleChat, Sentiment
+
+from setting.service_config import ServiceConfig
+
+from service.sentiment_analysis.keyword_analyzer import KeywordAnalyzer
+
+import importlib
+import numpy as np
+
 class SentimentAnalyzerV0(SentimentAnalyzer):
     def __init__(self) -> None:
         self.set_analyzer()
@@ -14,11 +21,11 @@ class SentimentAnalyzerV0(SentimentAnalyzer):
     
     def set_analyzer(self) -> None:
         self.analyzer_type = ServiceConfig.SENTIMENT_ANALYZER_V0_TYPE.value
-        self.model_name = ServiceConfig.SENTIMENT_ANALYZER_V0_MODEL_NAME.value
-        self.class_name = ServiceConfig.SENTIMENT_ANALYZER_V0_CLASS_NAME.value
+        self.module_name = ServiceConfig.SENTIMENT_ANALYZER_V0_MODULE.value
+        self.class_name = ServiceConfig.SENTIMENT_ANALYZER_V0_CLASS.value
         self.ai_model_name = ServiceConfig.SENTIMENT_ANALYZER_V0_AI_MODEL_NAME.value
 
-        module = importlib.import_module(f'ai_model.{self.analyzer_type}.{self.model_name}')
+        module = importlib.import_module(f'ai_model.{self.analyzer_type}.{self.module_name}')
         ai_model_class = getattr(module, self.class_name)
         self.ai_model = ai_model_class(
             AIModelInfo(
@@ -69,7 +76,7 @@ class SentimentAnalyzerV0(SentimentAnalyzer):
         return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
     def get_embedded_sentiments(self) -> list:
-        embedded_data = np.load(f'data/embedded_data/{self.model_name}.npz')
+        embedded_data = np.load(f'data/embedded_data/{self.module_name}.npz')
 
         self.embedded_sentiments = {}
         for key, value in embedded_data.items():

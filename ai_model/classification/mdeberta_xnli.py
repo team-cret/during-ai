@@ -8,17 +8,14 @@ from setting.model_config import ModelConfig
 
 from transformers import pipeline
 
-class BartLargeMnliTextClassification(TextClassification):
+class MDeBertaXnliTextClassification(TextClassification):
     def __init__(self, model_info:AIModelInfo) -> None:
         '''
             It doens't need any AI mdoel information
         '''
         self.sentiments = [value['sentiment'] for value in sentiments.sentiments.values()]
         
-        self.classifier = pipeline(
-            model=ModelConfig.BART_LARGE_MNLI_CLASSIFICATION_MODEL.value,
-            device_map='auto',
-        )
+        self.classifier = pipeline(model=ModelConfig.MDEBERTA_XNLI_CLASSIFICATION_MODEL.value)
 
     def classify_text(self, message:str) -> tuple[str, str]:
         result = self.classifier(
