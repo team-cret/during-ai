@@ -6,9 +6,10 @@ class ServiceConfig(Enum):
     CURRENT_SENTIMENT_ANALYZER = 'sentiment_analyzer_v0'
     CURRENT_SENTIMENT_ANALYZER_CLASS = 'SentimentAnalyzerV0'
 
-    SENTIMENT_ANALYZER_V0_TYPE = 'classification'
-    SENTIMENT_ANALYZER_V0_MODEL_NAME = 'bart_large_mnli'
-    SENTIMENT_ANALYZER_V0_CLASS_NAME = 'BartLargeMnliTextClassification'
+    SENTIMENT_ANALYZER_V0_TYPE = 'embedding'
+    SENTIMENT_ANALYZER_V0_MODEL_NAME = 'upstage'
+    SENTIMENT_ANALYZER_V0_CLASS_NAME = 'UpstageTextEmbedding'
+    SENTIMENT_ANALYZER_V0_AI_MODEL_NAME = 'solar-embedding-1-large'
     #-------------------------------------------------------------------------------------------#
 
 

@@ -1,14 +1,17 @@
 from .text_embedding import TextEmbedding
-from setting.model_config import ModelConfig
+
+from model.ai_model import AIModelInfo
+
 from setting.config import Config
+
 import google.generativeai as genai
 import os
-from model.ai_model import AIModelInfo
-import vertexai
-from vertexai.language_models import TextEmbeddingModel
 
 class GeminiTextEmbedding(TextEmbedding):
     def __init__(self, model_info:AIModelInfo) -> None:
+        '''
+            need ai_model_name like 'models/embedding-xxx'
+        '''
         genai.configure(api_key=os.environ[Config.GOOGLE_API_KEY.value])
         self._model_name = model_info.ai_model_name
         # vertexai.init(project=Config.GOOGLE_PROJECT_ID.value)

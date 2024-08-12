@@ -47,12 +47,10 @@ class DB:
                     # print(Exception)
                     continue
         
-        print('loaded data : ', len(loaded_data))
         parsed_data = []
         for data in loaded_data:
             parsed_data.append(self.parse_couple_chat(data))
 
-        print('parsed data : ', len(parsed_data))
         return parsed_data
     
     def parse_couple_chat(self, chat_db_row:dict) -> CoupleChat:

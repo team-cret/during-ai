@@ -1,0 +1,22 @@
+import os, sys
+
+def init_setting() -> None:
+    # path setting
+    #----------------------------------------------------------------------#
+    try:
+        dir_path = os.path.abspath(os.path.dirname('during-ai'))
+        sys.path.insert(0, dir_path)
+        print('success path registration [dir-path] :', dir_path)
+    except Exception:
+        print('failed to register path')
+    #----------------------------------------------------------------------#
+
+    # api key setting
+    #----------------------------------------------------------------------#
+    try:
+        from setting.api_key_setting import APIKeySetting
+        api_key_setter = APIKeySetting()
+        api_key_setter.set_api_key()
+    except Exception:
+        print('failed to set api key')
+    #----------------------------------------------------------------------#

@@ -4,8 +4,9 @@ from .keyword_analyzer import KeywordAnalyzer
 from model.data_model import CoupleChat, Sentiment
 import numpy as np
 from .sentiment_analyzer import SentimentAnalyzer
-from data.sentiments import sentiment_to_id
-
+from ai_model.embedding.text_embedding import TextEmbedding
+from data.sentiments import sentiment_to_id, sentiments
+from model.ai_model import AIModelInfo
 class SentimentAnalyzerV0(SentimentAnalyzer):
     def __init__(self) -> None:
         self.set_analyzer()
@@ -15,10 +16,15 @@ class SentimentAnalyzerV0(SentimentAnalyzer):
         self.analyzer_type = ServiceConfig.SENTIMENT_ANALYZER_V0_TYPE.value
         self.model_name = ServiceConfig.SENTIMENT_ANALYZER_V0_MODEL_NAME.value
         self.class_name = ServiceConfig.SENTIMENT_ANALYZER_V0_CLASS_NAME.value
+        self.ai_model_name = ServiceConfig.SENTIMENT_ANALYZER_V0_AI_MODEL_NAME.value
 
         module = importlib.import_module(f'ai_model.{self.analyzer_type}.{self.model_name}')
         ai_model_class = getattr(module, self.class_name)
-        self.ai_model = ai_model_class()
+        self.ai_model = ai_model_class(
+            AIModelInfo(
+                ai_model_name=self.ai_model_name,
+            )
+        )
 
         if self.analyzer_type == 'embedding':
             self.get_embedded_sentiments()
@@ -38,14 +44,33 @@ class SentimentAnalyzerV0(SentimentAnalyzer):
             return self.analyze_by_embedding(chat.message)
     
     def analyze_by_embedding(self, message:str) -> Sentiment:
+        self.ai_model: TextEmbedding
         embedded_chat = self.ai_model.embed_text(message)
-        for embedded_sentiment in self.embedded_sentiments:
+
+        max_similarity = 0
+        max_sentiment_id = -1
+        for sentiment_id, embedded_sentiment in self.embedded_sentiments.items():
             similarity = self.similarity(embedded_chat, embedded_sentiment)
-            if similarity > 0.9:
-                return self.sentiments[self.embedded_sentiments.index(embedded_sentiment)]
+
+            if similarity > 0.5 and max_similarity < similarity:
+                max_similarity = similarity
+                max_sentiment_id = sentiment_id
+        if max_sentiment_id == -1:
+            return Sentiment(
+                sentiment='없음',
+                sentiment_id=max_sentiment_id
+            )
+        return Sentiment(
+            sentiment=sentiments[max_sentiment_id]['sentiment'],
+            sentiment_id=max_sentiment_id
+        )
 
     def similarity(self, v1, v2):
         return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
     def get_embedded_sentiments(self) -> list:
-        self.embedded_sentiments = self.ai_model.get_sentiments()
+        embedded_data = np.load(f'data/embedded_data/{self.model_name}.npz')
+
+        self.embedded_sentiments = {}
+        for key, value in embedded_data.items():
+            self.embedded_sentiments[int(key)] = value
