@@ -72,7 +72,7 @@ class SentimentAnalyzerV0(SentimentAnalyzer):
             sentiment_id=max_sentiment_id
         )
 
-    def similarity(self, v1, v2):
+    def similarity(self, v1, v2) -> float:
         return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
     def get_embedded_sentiments(self) -> list:

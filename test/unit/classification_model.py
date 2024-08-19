@@ -5,6 +5,8 @@ from ai_model.classification.pogjin_roberta import PongjinRobertaTextClassificat
 
 from model.ai_model import AIModelInfo
 
+from time import time
+
 class ClassificationModelTester:
     def __init__(self) -> None:
         self.setup_for_test()
@@ -22,6 +24,7 @@ class ClassificationModelTester:
             {'contents_type' : 'text', 'content' : '오늘도 화이팅 하구 와요!'},
             {'contents_type' : 'text', 'content' : '오늘은 너무 피곤해'},
             {'contents_type' : 'text', 'content' : '사랑해'},
+            {'contents_type' : 'text', 'content' : ''},
         ]
 
     def test(self):
@@ -30,7 +33,8 @@ class ClassificationModelTester:
             model: TextClassification
 
             for test_content in self.test_contents:
-                
+                time_start = time()
                 if test_content['contents_type'] == 'text':
                     result = model.classify_text(test_content['content'])
                     print(f'{test_content['content']} -> {result['sentiments'][0]}')
+                print(f'elapsed time : {time() - time_start:.2f} sec')

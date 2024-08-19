@@ -14,6 +14,7 @@ class ReportGeneratorTester:
     def setup_test_contents(self):
         self.test_contents = [
             {'start' : datetime(2022, 1, 1), 'end' : datetime(2022, 2, 1)},
+            {'start' : datetime(2022, 2, 1), 'end' : datetime(2022, 2, 2)},
         ]
 
     def test(self):

@@ -1,4 +1,4 @@
-from .text_embedding import TextEmbedding
+from ai_model.embedding.text_embedding import TextEmbedding
 
 from model.ai_model import AIModelInfo
 

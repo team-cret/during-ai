@@ -1,6 +1,8 @@
-from .text_embedding import TextEmbedding
-from langchain_openai import OpenAIEmbeddings
+from ai_model.embedding.text_embedding import TextEmbedding
+
 from model.ai_model import AIModelInfo
+
+from langchain_openai import OpenAIEmbeddings
 
 class OpenAITextEmbedding(TextEmbedding):
     def __init__(self, model_info:AIModelInfo) -> None:

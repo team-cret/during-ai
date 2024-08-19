@@ -15,7 +15,10 @@ class MDeBertaXnliTextClassification(TextClassification):
         '''
         self.sentiments = [value['sentiment'] for value in sentiments.sentiments.values()]
         
-        self.classifier = pipeline(model=ModelConfig.MDEBERTA_XNLI_CLASSIFICATION_MODEL.value)
+        self.classifier = pipeline(
+            model=ModelConfig.MDEBERTA_XNLI_CLASSIFICATION_MODEL.value,
+            device=0,
+        )
 
     def classify_text(self, message:str) -> tuple[str, str]:
         result = self.classifier(

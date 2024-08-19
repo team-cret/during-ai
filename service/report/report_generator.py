@@ -1,12 +1,18 @@
+from ai_model.generation.dalle3 import DallE3
+
+from database.db import DB
+
 from model.report import Report
 from model.data_model import CoupleChat
+
 from service.report.statistical_analyzer import StatisticalAnalyzer
+
 from datetime import datetime
-from database.db import DB
 
 class ReportGenerator:
     def __init__(self):
         self.statistical_analyzer = StatisticalAnalyzer()
+        self.image_generator = DallE3()
         self.db = DB()
 
     def generate_report(self, couple_id:str, start_date:datetime, end_date:datetime) -> Report:
@@ -15,7 +21,7 @@ class ReportGenerator:
 
         report = Report()
         if report_type == 'small':
-            report = self.load_connection_log()
+            report = self.generate_image(couple_chat)
         else:
             report = self.analyze_statistics(report, couple_chat)
         return report
@@ -23,9 +29,14 @@ class ReportGenerator:
     def load_couple_chat(self, couple_id:str, start_date:datetime, end_date:datetime) -> list[CoupleChat]:
         return self.db.load_chat_data_for_period(couple_id, start_date, end_date)
     
-    def generate_image(self) -> Report:
+    def generate_image(self, couple_chat:list[CoupleChat]) -> Report:
+        # prompt = '채팅 내용을 보고 채팅 내용에 가장 적합한 이미지를 생성해주세요\n' + '\n'.join([f'[{chat.user_id}] : {chat.message}' for chat in couple_chat])
+        prompt = '아래 대화내용을 보고 가장 먼저 떠오르는 이미지를 생성해주세요\n' + '\n'.join([f'[{chat.user_id}] : {chat.message}' for chat in couple_chat])
+        img_path = self.image_generator.generate_image(prompt)
+
+
         return Report(
-            image='image_path'
+            image=img_path
         )
 
     def load_connection_log(self):
@@ -34,7 +45,7 @@ class ReportGenerator:
 
     
     def decide_report_type(self, couple_chat:list[CoupleChat]) -> str:
-        if len(couple_chat) < 150:
+        if len(couple_chat) < 500:
             return 'small'
         else:
             return 'big'

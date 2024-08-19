@@ -20,6 +20,7 @@ class PongjinRobertaTextClassification(TextClassification):
             'zero-shot-classification',
             args_parser=CustomZeroShotClassificationArgumentHandler(),
             model=ModelConfig.PONGJIN_ROBERTA_CLASSIFICATION_MODEL.value,
+            device=0,
         )
 
     def classify_text(self, message:str) -> tuple[str, str]:
