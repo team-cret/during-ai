@@ -1,5 +1,5 @@
 import os, sys
-
+import logging
 def init_setting() -> None:
     # path setting
     #----------------------------------------------------------------------#
@@ -9,6 +9,7 @@ def init_setting() -> None:
         print('success path registration [dir-path] :', dir_path)
     except Exception:
         print('failed to register path')
+        logging.error('exception occurred', exc_info=True)
     #----------------------------------------------------------------------#
 
     # api key setting
@@ -19,4 +20,5 @@ def init_setting() -> None:
         api_key_setter.set_api_key()
     except Exception:
         print('failed to set api key')
+        logging.error('exception occurred', exc_info=True)
     #----------------------------------------------------------------------#
