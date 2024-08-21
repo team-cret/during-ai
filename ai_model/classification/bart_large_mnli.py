@@ -17,7 +17,7 @@ class BartLargeMnliTextClassification(TextClassification):
         
         self.classifier = pipeline(
             model=ModelConfig.BART_LARGE_MNLI_CLASSIFICATION_MODEL.value,
-            device=0,
+            device=-1,
         )
 
     def classify_text(self, message:str) -> tuple[str, str]:
