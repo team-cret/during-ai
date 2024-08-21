@@ -33,6 +33,7 @@ class ChatGenerator:
         # document = self.retrieve_document(embedded_chat)
         user_prompt, system_prompt = self.generate_prompt(user_data)
         generated_text = self.llm_model.generate_text_by_chat_bot(user_prompt, list(self.cached_memory), system_prompt)
+        print(f'Generated Text: {generated_text}')
         self.cached_memory.append({
             'role' : 'user',
             'text' : user_data.message,

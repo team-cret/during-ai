@@ -5,8 +5,8 @@ from enum import Enum
 class ServiceConfig(Enum):
     # SENTIMENT ANALYSIS
     #-------------------------------------------------------------------------------------------#
-    CURRENT_SENTIMENT_ANALYZER_MODULE = 'sentiment_analyzer_v1'
-    CURRENT_SENTIMENT_ANALYZER_CLASS = 'SentimentAnalyzerV1'
+    CURRENT_SENTIMENT_ANALYZER_MODULE = 'sentiment_analyzer_v0'
+    CURRENT_SENTIMENT_ANALYZER_CLASS = 'SentimentAnalyzerV0'
 
     SENTIMENT_ANALYZER_V0_TYPE = 'classification'
     SENTIMENT_ANALYZER_V0_MODULE = 'pogjin_roberta'

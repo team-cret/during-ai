@@ -14,7 +14,11 @@ def analyze_sentiment(chat: CoupleChat) -> Sentiment:
 
 @app.post("/api/service/next_gomdu_message")
 def generate_next_gomdu_message(chat: GomduChat) -> GomduChat:
-    return manager.gomdu.generate_next_chat(chat)
+    return GomduChat(
+        couple_id=chat.couple_id,
+        user_id=chat.user_id,
+        message=manager.gomdu.generate_next_chat(chat)
+    )
 
 # YYYY-MM-DD
 @app.post('/api/service/report')
