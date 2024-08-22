@@ -37,8 +37,11 @@ class SentimentAnalyzerV0(SentimentAnalyzer):
             self.get_embedded_sentiments()
 
     def analyze_sentiment(self, chat:CoupleChat) -> Sentiment:
-        if self.keyword_analyzer.is_keyword(chat.message):
-            return self.keyword_analyzer.is_keyword(chat.message)
+        if keyword := self.keyword_analyzer.is_keyword(chat.message):
+            return Sentiment(
+                sentiment=keyword,
+                sentiment_id=sentiment_to_id[keyword]
+            )
         
         if self.analyzer_type == 'classification':
             classify_result = self.ai_model.classify_text(chat.message)
