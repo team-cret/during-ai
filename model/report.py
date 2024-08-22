@@ -2,6 +2,11 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 from setting.service_config import ServiceConfig
 
+class ReportRequest(BaseModel):
+    couple_id:str = ''
+    start_date:datetime = datetime.now()
+    end_date:datetime = datetime.now()
+
 class Report(BaseModel):
     report_type:str = ''
     image:str = ''

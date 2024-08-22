@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from server_manager import ServerManager
-from model.report import Report
+from model.report import Report, ReportRequest
 from model.data_model import CoupleChat, GomduChat, Sentiment
 from datetime import datetime
 
@@ -22,5 +22,9 @@ def generate_next_gomdu_message(chat: GomduChat) -> GomduChat:
 
 # YYYY-MM-DD
 @app.post('/api/service/report')
-def generate_report(couple_id:str, start_date:datetime, end_date:datetime) -> Report:
-    return manager.report_generator.generate_report(couple_id, start_date, end_date)
+def generate_report(report_request:ReportRequest) -> Report:
+    return manager.report_generator.generate_report(
+        report_request.couple_id,
+        report_request.start_date,
+        report_request.end_date
+    )
