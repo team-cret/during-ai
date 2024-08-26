@@ -1,12 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from server_manager import ServerManager
 from model.report import Report, ReportRequest
 from model.data_model import CoupleChat, GomduChat, Sentiment
-from datetime import datetime
 
 manager = ServerManager()
 
 app = FastAPI()
+import time
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
 
 @app.post("/api/service/sentiment_analysis")
 def analyze_sentiment(chat: CoupleChat) -> Sentiment:
