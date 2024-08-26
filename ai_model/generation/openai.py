@@ -12,6 +12,10 @@ class OpenAITextGenerator:
             {
                 'role' : 'system',
                 'content' : gomdu_system_prompt
+            },
+            {
+                'role' : 'system',
+                'content' : '이번에 답할 때는 커플 대화내용 중에서 [] 이 부분을 참고해서 대답해줘 이 부분을 참고해도 모르겠으면 모른다고 대답해야돼'
             }
         ]
 
