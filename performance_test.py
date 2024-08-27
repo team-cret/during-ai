@@ -39,10 +39,10 @@ class Tester:
         #---------------------------------------------------------------------------#
         time_start = time()
         self.test_setup = {
-            'embedding_model'      : [False, EmbeddingModelTester()],
+            'embedding_model'      : [True, EmbeddingModelTester()],
             'classification_model' : [False, ClassificationModelTester()],
             'sentiment_analysis'   : [False, SentimentAnalyzerTester()],
-            'chat_generator'       : [True, GomduChatGeneratorTester()],
+            'chat_generator'       : [False, GomduChatGeneratorTester()],
             'report_generator'     : [False, ReportGeneratorTester()],
         }
         print('successfully end setup for test' + f'elapsed time : {time() - time_start:.2f} sec')

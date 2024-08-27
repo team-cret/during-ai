@@ -21,3 +21,12 @@ class CoupleChat(BaseModel):
 class Sentiment(BaseModel):
     sentiment: str = ''
     sentiment_id: int = 0
+
+class RetrievedData(BaseModel):
+    user_id: str = ''
+    couple_id: str = ''
+    chat_id: int = 0
+    summary: str = ''
+    original_message: str = ''
+    couple_chat_ids: list[int] = []
+    timestamp: datetime = datetime.now()
