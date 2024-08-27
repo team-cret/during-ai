@@ -26,8 +26,10 @@ WORKDIR /usr/src/during-ai
 COPY requirements.txt ./
 
 # Python 패키지 설치
-RUN python3.12 -m pip install --upgrade pip \
-    && python3.12 -m pip install -r requirements.txt
+RUN python3.12 -m venv /usr/src/during && \
+    . /usr/src/during/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt
 
 # 애플리케이션 파일 복사
 COPY . .
