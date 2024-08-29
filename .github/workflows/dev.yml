@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull gunwoo99/your-image-name:latest
-            docker stop during_ai_container || true
-            docker rm during_ai_container || true
-            docker run -d --name during_ai_container -p 80:80 gunwoo99/dev_cicd_image:latest
+            docker pull gunwoo99/during_dev_ai:latest
+            docker stop during_dev_ai || true
+            docker rm during_dev_ai || true
+            docker run -d --name during_dev_ai -p 3142:3142 gunwoo99/during_dev_ai:latest
