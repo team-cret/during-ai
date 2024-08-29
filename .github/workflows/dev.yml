@@ -18,7 +18,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build Docker image
-        run: docker build . -t gunwoo99/dev_cicd_image:latest
+        run: docker build . -t gunwoo99/during_dev_ai:latest
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Push Docker image to Docker Hub
-        run: docker push gunwoo99/dev_cicd_image:latest
+        run: docker push gunwoo99/during_dev_ai:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.7
