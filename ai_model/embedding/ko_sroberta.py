@@ -1,14 +1,15 @@
-from ai_model.embedding.text_embedding import TextEmbedding
-
 from langchain_huggingface import HuggingFaceEmbeddings
 
-import os
-from model.ai_model import AIModelInfo
+from ai_model.embedding.embedding import Embedding
+from setting.model_config import ModelConfig
 
-class KoSrobertaTextEmbedding(TextEmbedding):
-    def __init__(self, model_info:AIModelInfo) -> None:
+class KoSrobertaTextEmbedding(Embedding):
+    def __init__(self) -> None:
+        self.set_model()
+    
+    def set_model(self) -> None:
         self.embed_model = HuggingFaceEmbeddings(
-            model_name=model_info.ai_model_name,
+            model_name=ModelConfig.KO_SROBERTA_EMBEDDING_MODEL_NAME.value,
         )
     
     def embed_text(self, text:str) -> list[float]:

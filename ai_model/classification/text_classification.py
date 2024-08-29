@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 
 class TextClassification(ABC):
     @abstractmethod
-    def __init__(self) -> None:
-        super().__init__()
+    def set_model(self) -> None:
+        pass
 
     @abstractmethod
-    def classify_text(self, test:str) -> dict:
+    def classify_text(self, text:str) -> dict:
         pass

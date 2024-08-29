@@ -1,13 +1,14 @@
-from ai_model.embedding.text_embedding import TextEmbedding
-
-from model.ai_model import AIModelInfo
-
 from langchain_upstage import UpstageEmbeddings
-import os
 
-class UpstageTextEmbedding(TextEmbedding):
-    def __init__(self, model_info:AIModelInfo) -> None:
-        self.embed_model = UpstageEmbeddings(model=model_info.ai_model_name)
+from ai_model.embedding.embedding import Embedding
+from setting.model_config import ModelConfig
+
+class UpstageTextEmbedding(Embedding):
+    def __init__(self) -> None:
+        self.set_model()
+    
+    def set_model(self) -> None:
+        self.embed_model = UpstageEmbeddings(model=ModelConfig.UPSTAGE_EMBEDDING_MODEL_NAME.value)
     
     def embed_text(self, text:str) -> list[float]:
         return self.embed_model.embed_query(text)

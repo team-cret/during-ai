@@ -1,20 +1,20 @@
 from model.data_model import CoupleChat
 
-from service.sentiment_analysis.sentiment_analyzer_v0 import SentimentAnalyzerV0
-from service.sentiment_analysis.sentiment_analyzer_v1 import SentimentAnalyzerV1
-from service.sentiment_analysis.sentiment_analyzer import SentimentAnalyzer
+from service.motion_analysis.motion_analyzer_v0 import MotionAnalyzerV0
+from service.motion_analysis.motion_analyzer_v1 import  MotionAnalyzerV1
+from service.motion_analysis.motion_analyzer import MotionAnalyzer
 
 from time import time
 
-class SentimentAnalyzerTester:
+class MotionAnalyzerTester:
     def __init__(self) -> None:
         self.setup_for_test()
         self.setup_test_contents()
     
     def setup_for_test(self):
         self.sentiment_analyzers = {
-            'sentiment_analyzerV0' : SentimentAnalyzerV0(),
-            'sentiment_analyzerV1' : SentimentAnalyzerV1(),
+            'motion_analyzerV0' : MotionAnalyzerV0(),
+            'motion_analyzerV1' : MotionAnalyzerV1(),
         }
 
     def setup_test_contents(self):
@@ -40,12 +40,12 @@ class SentimentAnalyzerTester:
     def test(self):
         for analyzer_name, analyzer in self.sentiment_analyzers.items():
             print(f'[{analyzer_name}] sentiment analyzer test')
-            analyzer: SentimentAnalyzer
+            analyzer: MotionAnalyzer
 
             for test_content in self.test_contents:
                 start_time  = time()
                 if test_content['contents_type'] == 'text':
-                    print(f'{test_content['content']} -> {analyzer.analyze_sentiment(
+                    print(f'{test_content['content']} -> {analyzer.analyze_motion(
                         CoupleChat(message=test_content['content'])
                     )}' + f' elapsed time : {time() - start_time:.2f} sec')
                     

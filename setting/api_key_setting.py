@@ -1,12 +1,13 @@
-from .config import Config
-
 import os
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from setting.config import Config
 
 class APIKeySetting(BaseSettings):
     openai_api_key      : str
     huggingface_api_key : str
-    upstage_api_key     : str
+    upstage_api_key     : str 
     google_api_key      : str
 
     model_config = SettingsConfigDict(

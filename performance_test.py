@@ -3,10 +3,6 @@ from time import time
 
 class Tester:
     def __init__(self) -> None:
-        from transformers import AutoTokenizer
-
-        tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
-        tokenizer.clean_up_tokenization_spaces = True
         init_setting.init_setting()
         self.setup_for_test()
 
@@ -25,8 +21,8 @@ class Tester:
         # service test
         #---------------------------------------------------------------------------#
         time_start = time()
-        from test.services.sentiment_analyzer import SentimentAnalyzerTester
-        print('success import SentimentAnalyzerTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
+        from test.services.motion_analyzer import MotionAnalyzerTester
+        print('success import MotionAnalyzerTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
         time_start = time()
         from test.services.gomdu_chat_generator import GomduChatGeneratorTester
         print('success import GomduChatGeneratorTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
@@ -39,9 +35,9 @@ class Tester:
         #---------------------------------------------------------------------------#
         time_start = time()
         self.test_setup = {
-            'embedding_model'      : [True, EmbeddingModelTester()],
+            'embedding_model'      : [False, EmbeddingModelTester()],
             'classification_model' : [False, ClassificationModelTester()],
-            'sentiment_analysis'   : [False, SentimentAnalyzerTester()],
+            'motion_analyzer'      : [True, MotionAnalyzerTester()],
             'chat_generator'       : [False, GomduChatGeneratorTester()],
             'report_generator'     : [False, ReportGeneratorTester()],
         }

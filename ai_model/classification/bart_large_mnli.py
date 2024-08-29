@@ -1,33 +1,29 @@
-from .text_classification import TextClassification
-
-from data import sentiments
-
-from model.ai_model import AIModelInfo
-
-from setting.model_config import ModelConfig
-
 from transformers import pipeline
 
+from ai_model.classification.text_classification import TextClassification
+from data.motions import motions
+from setting.model_config import ModelConfig
+
 class BartLargeMnliTextClassification(TextClassification):
-    def __init__(self, model_info:AIModelInfo) -> None:
-        '''
-            It doens't need any AI mdoel information
-        '''
-        self.sentiments = [value['sentiment'] for value in sentiments.sentiments.values()]
+    def __init__(self) -> None:
+        self.set_model()
+
+    def set_model(self) -> None:
+        self.motions = [value['motion'] for value in motions.values()]
         
         self.classifier = pipeline(
             model=ModelConfig.BART_LARGE_MNLI_CLASSIFICATION_MODEL.value,
             device=-1,
         )
 
-    def classify_text(self, message:str) -> tuple[str, str]:
+    def classify_text(self, text:str) -> dict:
         result = self.classifier(
-            message,
-            candidate_labels=self.sentiments,
+            text,
+            candidate_labels=self.motions,
             multi_label=True
         )
         
         return {
-            'sentiments' : result['labels'],
+            'motions' : result['labels'],
             'scores' : result['scores']
         }

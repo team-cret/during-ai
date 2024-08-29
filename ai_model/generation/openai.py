@@ -1,10 +1,18 @@
 import os
-from setting.config import Config
-from data.gomdu_prompt import gomdu_system_prompt
+
 from openai import OpenAI
+
+from data.gomdu_prompt import gomdu_system_prompt
+from data.motion_analysis_prompt import motion_analysis_prompt
+from model.data_model import CoupleChat, Motion
+from setting.config import Config
+from setting.model_config import ModelConfig
 
 class OpenAITextGenerator:
     def __init__(self) -> None:
+        self.set_model()
+    
+    def set_model(self) -> None:
         self.client = OpenAI(api_key=os.environ[Config.OPENAI_API_KEY.value])
         
     def generate_text_by_chat_bot(self, user_prompt:str, history:list[dict], is_stream:bool = False) -> str:
@@ -30,6 +38,11 @@ class OpenAITextGenerator:
                     'role' : 'user',
                     'content' : story['text']
                 })
+            elif story['role'] == 'system':
+                processed_history.append({
+                    'role' : 'system',
+                    'content' : story['content']
+                })
         
         processed_history.append({
             'role' : 'user',
@@ -37,8 +50,22 @@ class OpenAITextGenerator:
         })
 
         response = self.client.chat.completions.create(
-            model='gpt-4o-mini',
+            model=ModelConfig.OPENAI_LLM_MODEL.value,
             messages=processed_history,
         )
         
         return response.choices[0].message.content
+
+    def analyze_motion(self, chat:CoupleChat) -> Motion:
+        result = self.client.chat.completions.parse(
+            model='gpt-4o-mini',
+            messages=[
+                {
+                    'role' : 'system', 
+                    'content' : motion_analysis_prompt
+                },
+                {'role' : 'user', 'content' : chat.content}
+            ],
+            response_model=Motion,
+        )
+        return result

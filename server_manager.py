@@ -1,11 +1,11 @@
+import importlib
+
 from service.gomdu.chat_generator import ChatGenerator
 from service.report.report_generator import ReportGenerator
-from service.sentiment_analysis.sentiment_analyzer import SentimentAnalyzer
-
+from service.motion_analysis.motion_analyzer import MotionAnalyzer
 from setting.service_config import ServiceConfig
 from setting.init_setting import init_setting
 
-import importlib
 
 class ServerManager:
     def __init__(self):
@@ -15,7 +15,7 @@ class ServerManager:
     def service_setting(self):
         module = importlib.import_module(f'service.sentiment_analysis.{ServiceConfig.CURRENT_SENTIMENT_ANALYZER_MODULE.value}')
         analyzer_class = getattr(module, ServiceConfig.CURRENT_SENTIMENT_ANALYZER_CLASS.value)
-        self.sentiment_analyzer:SentimentAnalyzer = analyzer_class()
+        self.motion_analyzer:MotionAnalyzer = analyzer_class()
 
         self.gomdu = ChatGenerator()
         self.report_generator = ReportGenerator()

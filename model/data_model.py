@@ -18,9 +18,9 @@ class CoupleChat(BaseModel):
     couple_id: str = ''
     timestamp: datetime = datetime.now()
 
-class Sentiment(BaseModel):
-    sentiment: str = ''
-    sentiment_id: int = 0
+class Motion(BaseModel):
+    motion: str = ''
+    motion_id: int = 0
 
 class RetrievedData(BaseModel):
     user_id: str = ''

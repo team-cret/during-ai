@@ -5,7 +5,6 @@ from database.vectordb import VectorDB
 from database.db import DB
 from collections import deque
 from data import gomdu_prompt
-from model.ai_model import AIModelInfo
 
 class ChatGenerator:
     def __init__(self) -> None:
@@ -19,9 +18,7 @@ class ChatGenerator:
 
         module = importlib.import_module(f'ai_model.embedding.{ServiceConfig.GOMDU_CHAT_EMBEDDING_MODULE.value}')
         embedding_class = getattr(module, ServiceConfig.GOMDU_CHAT_EMBEDDING_CLASS.value)
-        self.embedding_model = embedding_class(AIModelInfo(
-            model_name=ServiceConfig.GOMDU_CHAT_EMBEDDING_MODEL_NAME.value
-        ))
+        self.embedding_model = embedding_class()
 
         self.db = DB()
         self.vector_db = VectorDB()

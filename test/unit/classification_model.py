@@ -1,11 +1,9 @@
+from time import time
+
 from ai_model.classification.text_classification import TextClassification
 from ai_model.classification.bart_large_mnli import BartLargeMnliTextClassification
 from ai_model.classification.mdeberta_xnli import MDeBertaXnliTextClassification
 from ai_model.classification.pogjin_roberta import PongjinRobertaTextClassification
-
-from model.ai_model import AIModelInfo
-
-from time import time
 
 class ClassificationModelTester:
     def __init__(self) -> None:
@@ -14,9 +12,9 @@ class ClassificationModelTester:
 
     def setup_for_test(self) -> None:
         self.classification_models = {
-            'bart_large_mnli' : BartLargeMnliTextClassification(AIModelInfo()),
-            'mdeberta_xnli' : MDeBertaXnliTextClassification(AIModelInfo()),
-            'pongjin_roberta' : PongjinRobertaTextClassification(AIModelInfo()),
+            'bart_large_mnli' : BartLargeMnliTextClassification(),
+            'mdeberta_xnli' : MDeBertaXnliTextClassification(),
+            'pongjin_roberta' : PongjinRobertaTextClassification(),
         }
     
     def setup_test_contents(self) -> None:
@@ -24,7 +22,7 @@ class ClassificationModelTester:
             {'contents_type' : 'text', 'content' : '오늘도 화이팅 하구 와요!'},
             {'contents_type' : 'text', 'content' : '오늘은 너무 피곤해'},
             {'contents_type' : 'text', 'content' : '사랑해'},
-            {'contents_type' : 'text', 'content' : ''},
+            {'contents_type' : 'text', 'content' : '오늘 너무 피곤해'},
         ]
 
     def test(self):
@@ -36,5 +34,5 @@ class ClassificationModelTester:
                 time_start = time()
                 if test_content['contents_type'] == 'text':
                     result = model.classify_text(test_content['content'])
-                    print(f'{test_content['content']} -> {result['sentiments'][0]}')
-                print(f'elapsed time : {time() - time_start:.2f} sec')
+                    print(f'{test_content['content']} -> {result['motions'][0]}', end='')
+                print(f'[elapsed time : {time() - time_start:.2f} sec]')
