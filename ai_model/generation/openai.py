@@ -15,7 +15,7 @@ class OpenAITextGenerator:
     def set_model(self) -> None:
         self.client = OpenAI(api_key=os.environ[Config.OPENAI_API_KEY.value])
         
-    def generate_text_by_chat_bot(self, user_prompt:str, history:list[dict], is_stream:bool = False) -> str:
+    def generate_text_chat_mode(self, user_prompt:str, history:list[dict], is_stream:bool = False) -> str:
         processed_history = [
             {
                 'role' : 'system',

@@ -5,7 +5,6 @@ class Tester:
     def __init__(self) -> None:
         init_setting.init_setting()
         self.setup_for_test()
-
     
     def setup_for_test(self):
         # unit test
@@ -16,6 +15,9 @@ class Tester:
         time_start = time()
         from test.unit.classification_model import ClassificationModelTester
         print('success import ClassificationModelTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
+        time_start = time()
+        from test.unit.db_test import DBTester
+        print('success import DBTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
         #---------------------------------------------------------------------------#
 
         # service test
@@ -37,7 +39,9 @@ class Tester:
         self.test_setup = {
             'embedding_model'      : [False, EmbeddingModelTester()],
             'classification_model' : [False, ClassificationModelTester()],
-            'motion_analyzer'      : [True, MotionAnalyzerTester()],
+            'db'                   : [False, DBTester()],
+
+            'motion_analyzer'      : [False, MotionAnalyzerTester()],
             'chat_generator'       : [False, GomduChatGeneratorTester()],
             'report_generator'     : [False, ReportGeneratorTester()],
         }

@@ -1,5 +1,7 @@
 from enum import Enum
 
+from sqlalchemy.dialects.postgresql import UUID
+
 from setting.model_config import ModelConfig
 
 class ServiceConfig(Enum):
@@ -30,6 +32,16 @@ class ServiceConfig(Enum):
     GOMDU_CHAT_EMBEDDING_MODULE = 'openai'
     GOMDU_CHAT_EMBEDDING_CLASS = 'OpenAITextEmbedding'
     GOMDU_CHAT_EMBEDDING_MODEL_NAME = ModelConfig.GEMINI_EMBEDDING_MODEL_NAME.value
+    GOMDU_CHAT_EMBEDDING_DIMENSION = 1536
+    GOMDU_CHAT_STREAM_MODE = False
+    GOMDU_CHAT_USER_NAME = 'user'
+    GOMDU_CHAT_AI_NAME = 'gomdu'
+
+    DB_TEST_SCHEMA_NAME = 'vectordb'
+    DB_TEST_COUPLE_ID = '5701de9e-f3b4-4fdf-8c42-e9e6965cb514'
+    DB_TEST_USER_ID_1 = '9c4cf30a-fe60-495a-a21a-741b5010264f'
+    DB_TEST_USER_ID_2 = '6b8338b6-abb2-423d-b572-b2b5abaf11bc'
+    DB_TEST_HISTORY_ID = 846264338
     #-------------------------------------------------------------------------------------------#
 
 

@@ -1,50 +1,54 @@
 
-class VectorDB:
-    def __init__(self) -> None:
-        pass
+# class VectorDB:
+#     def __init__(self) -> None:
+#         pass
 
-    def insertData(self, groupId, vectorData):
-        pass
+#     def insertData(self, groupId, vectorData):
+#         pass
 
-    def removeDataByChatId(self, groupId, chatId):
-        pass
+#     def removeDataByChatId(self, groupId, chatId):
+#         pass
 
-    def retrieve_data(self, groupId, userData):
-        return ['', '', '', '', '']
+#     def retrieve_data(self, groupId, userData):
+#         return ['', '', '', '', '']
     
 from datetime import datetime
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 from model.data_model import CoupleChat, GomduChat, RetrievedData
-from setting.config import Config
-from setting.db_config import DBConfig
+from setting.service_config import ServiceConfig
+from setting.env_setting import EnvSetting
 
 class VectorDB:
     def __init__(self) -> None:
-        DATABASE_URL = DBConfig.DATABASE_URL.value
+        self.set_db()
+    
+    def set_db(self):
+        DATABASE_URL = EnvSetting().db_url
         self.engine = create_engine(DATABASE_URL)
         self.Session = sessionmaker(bind=self.engine)
     
     def get_session(self):
         return self.Session()
 
-    def retrieve_data(self, couple_id:int, embedded_data:list[float]) -> list[RetrievedData]:
+    def retrieve_data(self, couple_id:str, embedded_data:list[float]) -> list[RetrievedData]:
         try:
+            session = self.get_session()
             query_vector_str = embedded_data.tolist()
             query_vector_sql = str(query_vector_str).replace('[', '{').replace(']', '}')
 
             sql = text(f"""
                 WITH query AS (
-                    SELECT '{query_vector_sql}'::VECTOR(300) AS q
+                    SELECT '{query_vector_sql}'::VECTOR({ServiceConfig.GOMDU_CHAT_EMBEDDING_DIMENSION.value}) AS q
                 )
                 SELECT id, name, embedding,
                     1 - (embedding <=> q) AS similarity
-                FROM items, query
+                FROM , query
                 ORDER BY similarity DESC
                 LIMIT :limit;
             """)
-            session = self.get_session()
+            
             query = session.query(RetrievedData).filter(
                 RetrievedData.couple_id == couple_id,
             ).order_by(RetrievedData.chat_id)

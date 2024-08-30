@@ -4,11 +4,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from setting.config import Config
 
-class APIKeySetting(BaseSettings):
+class EnvSetting(BaseSettings):
     openai_api_key      : str
     huggingface_api_key : str
     upstage_api_key     : str 
     google_api_key      : str
+    db_url              : str
 
     model_config = SettingsConfigDict(
         env_file=Config.ENV_FILE.value,

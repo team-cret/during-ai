@@ -2,7 +2,7 @@ from ai_model.generation.dalle3 import DallE3
 
 from database.db import DB
 
-from model.report import Report
+from model.data_model import Report
 from model.data_model import CoupleChat
 
 from service.report.statistical_analyzer import StatisticalAnalyzer
@@ -11,6 +11,9 @@ from datetime import datetime
 
 class ReportGenerator:
     def __init__(self):
+        self.set_report_generator()
+        
+    def set_report_generator(self):
         self.statistical_analyzer = StatisticalAnalyzer()
         self.image_generator = DallE3()
         self.db = DB()
@@ -27,7 +30,7 @@ class ReportGenerator:
         return report
     
     def load_couple_chat(self, couple_id:str, start_date:datetime, end_date:datetime) -> list[CoupleChat]:
-        return self.db.load_chat_data_for_period(couple_id, start_date, end_date)
+        return self.db.get_couple_chat_for_period(couple_id, start_date, end_date)
     
     def generate_image(self, couple_chat:list[CoupleChat]) -> Report:
         # prompt = '채팅 내용을 보고 채팅 내용에 가장 적합한 이미지를 생성해주세요\n' + '\n'.join([f'[{chat.user_id}] : {chat.message}' for chat in couple_chat])

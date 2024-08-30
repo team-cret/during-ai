@@ -1,5 +1,6 @@
 import os, sys
 import logging
+
 def init_setting() -> None:
     # path setting
     #----------------------------------------------------------------------#
@@ -15,8 +16,8 @@ def init_setting() -> None:
     # api key setting
     #----------------------------------------------------------------------#
     try:
-        from setting.api_key_setting import APIKeySetting
-        api_key_setter = APIKeySetting()
+        from setting.env_setting import EnvSetting
+        api_key_setter = EnvSetting()
         api_key_setter.set_api_key()
     except Exception:
         print('failed to set api key')

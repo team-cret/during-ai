@@ -1,6 +1,6 @@
 import importlib
 
-from service.gomdu.chat_generator import ChatGenerator
+from service.gomdu.gomdu import Gomdu
 from service.report.report_generator import ReportGenerator
 from service.motion_analysis.motion_analyzer import MotionAnalyzer
 from setting.service_config import ServiceConfig
@@ -17,5 +17,5 @@ class ServerManager:
         analyzer_class = getattr(module, ServiceConfig.CURRENT_SENTIMENT_ANALYZER_CLASS.value)
         self.motion_analyzer:MotionAnalyzer = analyzer_class()
 
-        self.gomdu = ChatGenerator()
+        self.gomdu = Gomdu()
         self.report_generator = ReportGenerator()

@@ -1,34 +1,29 @@
+from datetime import datetime
+
+import numpy as np
 from sqlalchemy import create_engine, Table, MetaData
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime
-import psycopg2
-import numpy as np
 from tqdm import tqdm
 
-# 데이터베이스 연결 문자열
-DATABASE_URL = "postgresql+psycopg2://postgres:sync314159@127.0.0.1:5432/during_test"
+from init_setting import init_setting
+init_setting()
 
-# 엔진 생성
+from env_setting import EnvSetting
+from service_config import ServiceConfig
+
+DATABASE_URL = EnvSetting().db_url
 engine = create_engine(DATABASE_URL)
-print('success create engine')
-
-# 메타데이터 객체 생성
 metadata = MetaData()
-print('success create metadata')
-
-# 연결 생성
 Session = sessionmaker(bind=engine)
 session = Session()
-print('success create session')
-# 테이블 객체 생성
-chunk_table = Table('chunk', metadata, autoload_with=engine, schema='during_test')
-couple_chat_message_table = Table('couple_chat_message', metadata, autoload_with=engine, schema='during_test')
-chunked_couple_chat_table = Table('chunked_couple_chat', metadata, autoload_with=engine, schema='during_test')
-print('success create table')
 
-# insert query 실행
-couple_id = 314159265
+chunk_table = Table('chunk', metadata, autoload_with=engine, schema=ServiceConfig.DB_TEST_SCHEMA_NAME.value)
+couple_chat_message_table = Table('couple_chat_message', metadata, autoload_with=engine, schema=ServiceConfig.DB_TEST_SCHEMA_NAME.value)
+chunked_couple_chat_table = Table('chunked_couple_chat', metadata, autoload_with=engine, schema=ServiceConfig.DB_TEST_SCHEMA_NAME.value)
+
+couple_id = ServiceConfig.DB_TEST_COUPLE_ID.value
 chat_id = 0
+
 try:
     new_chat_messages = []
     new_chunks = []
@@ -61,7 +56,7 @@ try:
                         )
                         message_start = a[f+2:].find(':')
                         member_id_str = a[f+2:f+2+message_start-1]
-                        member_id = 1 if member_id_str == '박건우' else 2
+                        member_id = ServiceConfig.DB_TEST_USER_ID_1.value if member_id_str == '박건우' else ServiceConfig.DB_TEST_USER_ID_2.value
                         chat_id += 1
                         new_chat_message = {
                             'couple_chat_id' : chat_id,
@@ -94,15 +89,16 @@ try:
                     })
     try:
         session.execute(couple_chat_message_table.insert(), new_chat_messages)
+        print('inserted new chat messages')
         session.execute(chunk_table.insert(), new_chunks)
+        print('inserted new chunks')
         session.execute(chunked_couple_chat_table.insert(), new_chunked_couple_chats)
+        print('inserted new chunked couple chats')
         session.commit()
+        print('committed')
     except Exception as e:
         print(e)
 except Exception as e:
-    print(e)
-
-print('success execute query')
-# 세션 종료
+    print('exception')
 session.close()
 print('success close session')

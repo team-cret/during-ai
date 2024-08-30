@@ -1,6 +1,6 @@
 from model.data_model import CoupleChat
 from setting.service_config import ServiceConfig
-from model.report import Report
+from model.data_model import Report
 
 class StatisticalAnalyzer:
     def __init__(self):

@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Request
-from server_manager import ServerManager
+
 from model.report import Report, ReportRequest
 from model.data_model import CoupleChat, GomduChat, Motion
+from server_manager import ServerManager
 
 manager = ServerManager()
-
 app = FastAPI()
 
 import time
@@ -18,10 +18,10 @@ async def add_process_time_header(request: Request, call_next):
 
 @app.post("/api/service/motion-analysis")
 def analyze_motion(chat: CoupleChat) -> Motion:
-    return manager.sentiment_analyzer.analyze_sentiment(chat)
+    return manager.motion_analyzer.analyze_motion(chat)
 
-@app.post("/api/service/next_gomdu_message")
-def generate_next_gomdu_message(chat: GomduChat) -> GomduChat:
+@app.post("/api/service/gomdu-chat")
+def generate_gomdu_chat(chat: GomduChat) -> GomduChat:
     return GomduChat(
         couple_id=chat.couple_id,
         user_id=chat.user_id,
