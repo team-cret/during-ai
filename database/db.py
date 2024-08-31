@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from model.data_model import CoupleChat, GomduChat
 from model.db_model import CoupleChatMessage, PetChatMessage
 from setting.env_setting import EnvSetting
+from setting.service_config import ServiceConfig
 
 class DB:
     def __init__(self) -> None:
@@ -44,7 +45,7 @@ class DB:
             query = session.query(PetChatMessage).filter(
                 PetChatMessage.couple_id == str(couple_id),
                 PetChatMessage.pet_chat_history_id == history_id
-            ).order_by(PetChatMessage.pet_chat_id)
+            ).order_by(PetChatMessage.pet_chat_id).limit(ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value)
             
             gomdu_chat_history = query.all()
             

@@ -15,8 +15,7 @@ class DBTester:
     def test(self):
         data = self.db.get_couple_chat_for_period(ServiceConfig.DB_TEST_COUPLE_ID.value, datetime(2022, 1, 1), datetime(2022, 1, 2))
         print('couple chat load', '-' * 50)
-        for d in data:
-            print(d)
+        print(data[0])
         
         print('gomdu history load', '-' * 50)
         data = self.db.get_gomdu_history(ServiceConfig.DB_TEST_COUPLE_ID.value, ServiceConfig.DB_TEST_HISTORY_ID.value)
@@ -24,4 +23,10 @@ class DBTester:
         for d in data:
             print(d)
         
-        # self.vectordb.retrieve_data()
+        from random import random
+        load_embedded_vector = [random() * 2 -1 for _ in range(ServiceConfig.GOMDU_CHAT_EMBEDDING_DIMENSION.value)]
+        data = self.vectordb.retrieve_data(ServiceConfig.DB_TEST_COUPLE_ID.value, load_embedded_vector)
+        print('retrieved data', '-' * 50)
+        for d in data:
+            print(d.similarity)
+        

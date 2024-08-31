@@ -37,6 +37,10 @@ class ServiceConfig(Enum):
     GOMDU_CHAT_USER_NAME = 'user'
     GOMDU_CHAT_AI_NAME = 'gomdu'
 
+    RETRIEVAL_TOP_K = 3
+
+    DB_SCHEMA_NAME = 'vectordb'
+    DB_RETRIEVAL_TABLE_NAME = 'chunk'
     DB_TEST_SCHEMA_NAME = 'vectordb'
     DB_TEST_COUPLE_ID = '5701de9e-f3b4-4fdf-8c42-e9e6965cb514'
     DB_TEST_USER_ID_1 = '9c4cf30a-fe60-495a-a21a-741b5010264f'

@@ -8,7 +8,7 @@ class GomduChat(BaseModel):
     chat_id: int = 0
     sender: str = 'user'
     message: str = ''
-    history_id: str = ''
+    history_id: int = 0
     user_id: str = ''
     couple_id: str = ''
     timestamp: datetime = datetime.now()
@@ -26,13 +26,11 @@ class Motion(BaseModel):
     motion_id: int = 0
 
 class RetrievedData(BaseModel):
-    user_id: str = ''
-    couple_id: str = ''
-    chat_id: int = 0
+    chunk_id: int = 0
     summary: str = ''
+    similarity: float = 0
     original_message: str = ''
     couple_chat_ids: list[int] = []
-    timestamp: datetime = datetime.now()
 
 class ReportRequest(BaseModel):
     couple_id:str = ''

@@ -4,7 +4,7 @@ from openai import OpenAI
 
 from data.gomdu_prompt import gomdu_system_prompt
 from data.motion_analysis_prompt import motion_analysis_prompt
-from model.data_model import CoupleChat, Motion
+from model.data_model import CoupleChat, Motion, RetrievedData
 from setting.config import Config
 from setting.model_config import ModelConfig
 
@@ -15,7 +15,7 @@ class OpenAITextGenerator:
     def set_model(self) -> None:
         self.client = OpenAI(api_key=os.environ[Config.OPENAI_API_KEY.value])
         
-    def generate_text_chat_mode(self, user_prompt:str, history:list[dict], is_stream:bool = False) -> str:
+    def generate_text_chat_mode(self, user_prompt:str, retrieved_prompt:list[RetrievedData], history:list[dict], is_stream:bool = False) -> str:
         processed_history = [
             {
                 'role' : 'system',
@@ -23,7 +23,7 @@ class OpenAITextGenerator:
             },
             {
                 'role' : 'system',
-                'content' : '이번에 답할 때는 커플 대화내용 중에서 [] 이 부분을 참고해서 대답해줘 이 부분을 참고해도 모르겠으면 모른다고 대답해야돼'
+                'content' : f'이번에 답할 때는 커플 대화내용 중에서 [{retrieved_prompt}] 이 부분을 참고해서 대답해줘 이 부분을 참고해도 모르겠으면 모른다고 대답해줘'
             }
         ]
 

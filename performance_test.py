@@ -42,7 +42,7 @@ class Tester:
             'db'                   : [False, DBTester()],
 
             'motion_analyzer'      : [False, MotionAnalyzerTester()],
-            'chat_generator'       : [False, GomduChatGeneratorTester()],
+            'chat_generator'       : [True, GomduChatGeneratorTester()],
             'report_generator'     : [False, ReportGeneratorTester()],
         }
         print('successfully end setup for test' + f'elapsed time : {time() - time_start:.2f} sec')
