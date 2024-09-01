@@ -33,3 +33,7 @@ RUN python3.12 -m venv /usr/src/during && \
 
 # 애플리케이션 파일 복사
 COPY . .
+
+# shell 실행
+RUN chmod +x ./server_start.sh
+CMD ["./server_start.sh"]

@@ -13,8 +13,8 @@ class ServerManager:
         self.service_setting()
     
     def service_setting(self):
-        module = importlib.import_module(f'service.sentiment_analysis.{ServiceConfig.CURRENT_SENTIMENT_ANALYZER_MODULE.value}')
-        analyzer_class = getattr(module, ServiceConfig.CURRENT_SENTIMENT_ANALYZER_CLASS.value)
+        module = importlib.import_module(f'service.motion_analysis.{ServiceConfig.CURRENT_MOTION_ANALYZER_MODULE.value}')
+        analyzer_class = getattr(module, ServiceConfig.CURRENT_MOTION_ANALYZER_CLASS.value)
         self.motion_analyzer:MotionAnalyzer = analyzer_class()
 
         self.gomdu = Gomdu()

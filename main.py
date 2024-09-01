@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request
 
-from model.report import Report, ReportRequest
-from model.data_model import CoupleChat, GomduChat, Motion
+from model.data_model import Report, ReportRequest, CoupleChat, GomduChat, Motion
 from server_manager import ServerManager
 
 manager = ServerManager()
