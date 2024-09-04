@@ -1,4 +1,5 @@
 from collections import deque
+from datetime import datetime
 import importlib
 
 from database.db import DB
@@ -50,7 +51,14 @@ class Gomdu:
         generator['memory'].append({'role' : ServiceConfig.GOMDU_CHAT_USER_NAME.value, 'text' : chat.message})
         generator['memory'].append({'role' : ServiceConfig.GOMDU_CHAT_AI_NAME.value, 'text' : gomdu_response})
 
-        return gomdu_response
+        return GomduChat(
+            chat_id = chat.chat_id,
+            sender = ServiceConfig.GOMDU_CHAT_AI_NAME.value,
+            message = gomdu_response,
+            user_id = chat.user_id,
+            couple_id = chat.couple_id,
+            timestamp = datetime.now()
+        )
 
     def get_memory(self, chat:GomduChat, generator:dict) -> None:
         gomdu_history = generator['db'].get_gomdu_history(

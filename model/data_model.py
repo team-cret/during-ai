@@ -8,6 +8,7 @@ class GomduChat(BaseModel):
     chat_id: int = 0
     sender: str = 'user'
     message: str = ''
+    title:str = ''
     history_id: int = 0
     user_id: str = ''
     couple_id: str = ''

@@ -40,7 +40,6 @@ class StatisticalAnalyzer:
         self.couple_logs = {}
         for user_id in self.report_request.couple_member_ids:
             self.couple_logs[user_id] = self.db.get_member_activity(user_id)
-            self.couple_logs[user_id] = []
         
         self.generate_dataset()
 
@@ -105,9 +104,9 @@ class StatisticalAnalyzer:
             days_difference = (end_date - start_date).days
             concurrent_time_zone = [(days_difference - (start_date == end_date)) * unit + concurrent_time_zone[i] for i in range(modulo)]
 
-            concurrent_time_zone[start_time.seconds // (unit * 60)] = unit - (start_time.seconds % (unit * 60)) / 60
-            concurrent_time_zone[end_time.seconds // (unit * 60)] = (end_time.seconds % (unit * 60)) / 60
-            for i in range(start_time.seconds // (unit * 60) + 1, modulo):
+            concurrent_time_zone[int(start_time.seconds) // (unit * 60)] = unit - float(start_time.seconds % (unit * 60)) / 60
+            concurrent_time_zone[int(end_time.seconds) // (unit * 60)] = float(end_time.seconds % (unit * 60)) / 60
+            for i in range(int(start_time.seconds) // (unit * 60) + 1, modulo):
                 concurrent_time_zone[i] += unit
             
             for i in range(0, end_time.seconds // (unit * 60)):
