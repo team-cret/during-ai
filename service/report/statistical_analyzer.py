@@ -1,47 +1,183 @@
-from model.data_model import CoupleChat
+import re
+from datetime import datetime, timedelta
+from tqdm import tqdm
+
+from database.db import DB
+from model.data_model import CoupleChat, ConnectionLog, Report, ReportRequest
 from setting.service_config import ServiceConfig
-from model.data_model import Report
 
 class StatisticalAnalyzer:
     def __init__(self):
+        self.setup_for_test()
+
+    def setup_for_test(self):
+        self.db = DB()
         self.statistical_report:Report = Report()
 
-    def analyze_statistics(self, couple_chat:list[CoupleChat]):
+    def analyze_statistics(self, couple_chat:list[CoupleChat], report_request:ReportRequest):
         self.couple_chat = couple_chat
+        self.report_request = report_request
+
         self.analyze_response_time_zone()
         self.analyze_concurrent_time_zone()
-        self.analyze_frequently_used_emotion()
+        self.analyze_frequently_used_motion()
+        self.analyze_number_of_love_words()
         self.analyze_average_reply_term()
+
+        return self.statistical_report
 
     def analyze_response_time_zone(self):
         response_time_zone = [0 for _ in range(round(1440/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
         for chat in self.couple_chat:
-            response_time_zone[(chat.timestamp.hour * 60 + chat.timestamp.minute) // ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value] += 1
+            response_time_zone[
+                (chat.timestamp.hour * 60 + chat.timestamp.minute) // 
+                ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value
+            ] += 1
         self.statistical_report.response_time_zone = response_time_zone
 
     def analyze_concurrent_time_zone(self):
-        concurrent_time_zone = [0 for _ in range(round(24/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
-        pass
+        # couple log generation
+        self.couple_logs = {}
+        for user_id in self.report_request.couple_member_ids:
+            self.couple_logs[user_id] = self.db.get_member_activity(user_id)
+            self.couple_logs[user_id] = []
+        
+        self.generate_dataset()
 
-    def analyze_frequently_used_emotion(self):
-        emotions = {}
+        # user_id -> couple range extract
+        couple_range = {}
+        for user_id, user_logs in self.couple_logs.items():
+            if user_logs[0].connection_type == ServiceConfig.DB_CONNECTION_LOGOUT.value:
+                user_logs = [
+                    ConnectionLog(
+                        user_id = user_id,
+                        connection_type = ServiceConfig.DB_CONNECTION_LOGIN.value,
+                        timestamp = self.report_request.start_date,
+                    )
+                ] + user_logs
+            if user_logs[-1].connection_type == ServiceConfig.DB_CONNECTION_LOGIN.value:
+                user_logs.append(
+                    ConnectionLog(
+                        user_id = user_id,
+                        connection_type = ServiceConfig.DB_CONNECTION_LOGOUT.value,
+                        timestamp = self.report_request.end_date,
+                    )
+                )
+            
+            couple_range[user_id] = []
+            start_time = None
+            end_time = None
+            for user_log in user_logs:
+                if user_log.connection_type == ServiceConfig.DB_CONNECTION_LOGIN.value:
+                    if end_time != None:
+                        couple_range[user_log.user_id].append([start_time, end_time])
+                        start_time = None
+                        end_time = None
+                    if start_time == None:
+                        start_time = user_log.timestamp
+                elif user_log.connection_type == ServiceConfig.DB_CONNECTION_LOGOUT.value:
+                    end_time = user_log.timestamp
+        
+        couple_range_list = list(couple_range.values())
+        combined_time_range = couple_range_list[0]
+        for couple_range in couple_range_list[1:]:
+            combined_time_range = self.combine_couple_range(combined_time_range, couple_range)
+        
+        concurrent_time_zone = self.range_to_time_zone(combined_time_range)
+
+        self.statistical_report.concurrent_time_zone = concurrent_time_zone
+
+    def range_to_time_zone(self, time_range:tuple[datetime, datetime]) -> list[float]:
+        modulo = round(1440/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value)
+        concurrent_time_zone = [0 for _ in range(modulo)]
+
+        for start, end in tqdm(time_range):
+            start:datetime
+            end:datetime
+
+            unit = ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value
+
+            start_date = datetime(start.year, start.month, start.day)
+            end_date = datetime(end.year, end.month, end.day)
+            start_time = start - start_date
+            end_time = end - end_date
+
+            days_difference = (end_date - start_date).days
+            concurrent_time_zone = [(days_difference - (start_date == end_date)) * unit + concurrent_time_zone[i] for i in range(modulo)]
+
+            concurrent_time_zone[start_time.seconds // (unit * 60)] = unit - (start_time.seconds % (unit * 60)) / 60
+            concurrent_time_zone[end_time.seconds // (unit * 60)] = (end_time.seconds % (unit * 60)) / 60
+            for i in range(start_time.seconds // (unit * 60) + 1, modulo):
+                concurrent_time_zone[i] += unit
+            
+            for i in range(0, end_time.seconds // (unit * 60)):
+                concurrent_time_zone[i] += unit
+        return concurrent_time_zone
+
+    def combine_couple_range(self, user_log1:list[tuple[datetime, datetime]], user_log2:list[tuple[datetime, datetime]]) -> list[tuple[datetime, datetime]]:
+        combined_time_range = []
+        i = 0
+        j = 0
+        while i < len(user_log1) and j < len(user_log2):
+            four_point_sorting = sorted([(0, user_log1[i][0]), (0, user_log2[j][0]), (1, user_log1[i][1]), (1, user_log2[j][1])], key=lambda x:x[1])
+            if four_point_sorting[0][1] != four_point_sorting[1][1]:
+                combined_time_range.append((four_point_sorting[1][1], four_point_sorting[2][1]))
+
+            if user_log1[i][1] < user_log2[j][1]:
+                i += 1
+            else:
+                j += 1
+        return combined_time_range
+
+    def generate_dataset(self):
+        # test data
+        from random import randint
+
+        randnum = 1000
+
+        diff = self.report_request.end_date - self.report_request.start_date
+        rand_value1 = sorted([randint(1, int(diff.days * 86400 + diff.seconds)) for _ in range(randnum)])
+        rand_value2 = sorted([randint(1, int(diff.days * 86400 + diff.seconds)) for _ in range(randnum)])
+        datetimes1 = [self.report_request.start_date + timedelta(seconds=rand_value1[i]) for i in range(randnum)]
+        datetimes2 = [self.report_request.start_date + timedelta(seconds=rand_value2[i]) for i in range(randnum)]
+
+        for i in range(randnum):
+            self.couple_logs[ServiceConfig.DB_TEST_USER_ID_1.value].append(
+                ConnectionLog(
+                    user_id = ServiceConfig.DB_TEST_USER_ID_1.value,
+                    connection_type = ServiceConfig.DB_CONNECTION_LOGIN.value if i % 2 == 0 else ServiceConfig.DB_CONNECTION_LOGOUT.value,
+                    timestamp = datetimes1[i],
+                )
+            )
+            self.couple_logs[ServiceConfig.DB_TEST_USER_ID_2.value].append(
+                ConnectionLog(
+                    user_id = ServiceConfig.DB_TEST_USER_ID_2.value,
+                    connection_type = ServiceConfig.DB_CONNECTION_LOGIN.value if i % 2 == 0 else ServiceConfig.DB_CONNECTION_LOGOUT.value,
+                    timestamp = datetimes2[i],
+                )
+            )
+    
+    def analyze_frequently_used_motion(self):
+        motions = {}
         for chat in self.couple_chat:
-            if chat.chat_type == 'emotion':
-                if emotions[chat.message] == None:
-                    emotions[chat.message] = 1
+            if chat.chat_type == 'interaction':
+                if motions[chat.message] == None:
+                    motions[chat.message] = 1
                 else:
-                    emotions[chat.message] += 1
+                    motions[chat.message] += 1
+        
         self.statistical_report.frequently_used_emotion = sorted(
-            list(emotions.items()),
+            list(motions.items()),
             key=lambda x: -x[1],
         )[:6]
 
-    
+    def analyze_number_of_love_words(self):
+        love_words = '|'.join(['사랑해'])
+        full_message = ' '.join([chat.message for chat in self.couple_chat])
+
+        matches = re.findall(love_words, full_message)
+        self.statistical_report.number_of_love_words = len(matches)
+
     def analyze_average_reply_term(self):
         time_period = self.couple_chat[-1].timestamp - self.couple_chat[0].timestamp
-        
-        for i in range(1, len(self.couple_chat)):
-            previous_chat = self.couple_chat[i-1]
-            current_chat = self.couple_chat[i]
-        
         self.statistical_report.average_reply_term = time_period / len(self.couple_chat)

@@ -31,6 +31,24 @@ class PongjinRobertaTextClassification(TextClassification):
             'motions' : result['labels'],
             'scores' : result['scores']
         }
+    
+    def is_affection(self, text:str) -> bool:
+        result = self.classifier(
+            text,
+            candidate_labels=['사랑표현 이', '사랑표현이 아니'],
+            hypothesis_template="이 문장은 {}다.",
+        )
+
+        return result['labels'][0] == '사랑표현 이'
+    
+    def is_affection_batch_classification(self, texts:list[str]) -> list[bool]:
+        results = self.classifier(
+            texts,
+            candidate_labels=['사랑표현 이', '사랑표현이 아니'],
+            hypothesis_template="이 문장은 {}다.",
+        )
+
+        return [result['labels'][0] == '사랑표현 이' for result in results]
 
 class ArgumentHandler(ABC):
     """

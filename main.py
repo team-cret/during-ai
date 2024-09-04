@@ -21,17 +21,8 @@ def analyze_motion(chat: CoupleChat) -> Motion:
 
 @app.post("/api/service/gomdu-chat")
 def generate_gomdu_chat(chat: GomduChat) -> GomduChat:
-    return GomduChat(
-        couple_id=chat.couple_id,
-        user_id=chat.user_id,
-        message=manager.gomdu.generate_next_chat(chat)
-    )
+    return manager.gomdu.generate_next_chat(chat)
 
-# YYYY-MM-DD
 @app.post('/api/service/report')
 def generate_report(report_request:ReportRequest) -> Report:
-    return manager.report_generator.generate_report(
-        report_request.couple_id,
-        report_request.start_date,
-        report_request.end_date
-    )
+    return manager.report_manager.generate_report(report_request)

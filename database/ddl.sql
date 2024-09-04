@@ -37,3 +37,12 @@ CREATE TABLE vectordb.chunked_couple_chat (
     FOREIGN KEY (chunk_id) REFERENCES vectordb.chunk(chunk_id),
     FOREIGN KEY (couple_chat_id) REFERENCES vectordb.couple_chat_message(couple_chat_id)
 );
+CREATE TABLE vectordb.member_activity
+(
+    active_date timestamp(6) without time zone,
+    activity_id bigint NOT NULL,
+    member_id uuid,
+    active_type character varying(255),
+    CONSTRAINT member_activity_pkey PRIMARY KEY (activity_id),
+    CONSTRAINT member_activity_active_type_check CHECK (active_type::text = ANY (ARRAY['LOGIN'::character varying, 'LOGOUT'::character varying]::text[]))
+);

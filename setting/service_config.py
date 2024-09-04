@@ -23,7 +23,6 @@ class ServiceConfig(Enum):
     MOTION_ANALYZER_V1_CLASS3 = 'BartLargeMnliTextClassification'
     #-------------------------------------------------------------------------------------------#
 
-
     # GOMDU CHAT
     #-------------------------------------------------------------------------------------------#
     GOMDU_CHAT_MEMORY_SIZE = 10
@@ -38,7 +37,12 @@ class ServiceConfig(Enum):
     GOMDU_CHAT_AI_NAME = 'gomdu'
 
     RETRIEVAL_TOP_K = 3
+    #-------------------------------------------------------------------------------------------#
 
+    # DB
+    #-------------------------------------------------------------------------------------------#
+    DB_CONNECTION_LOGIN = 'LOGIN'
+    DB_CONNECTION_LOGOUT = 'LOGOUT'
     DB_SCHEMA_NAME = 'vectordb'
     DB_RETRIEVAL_TABLE_NAME = 'chunk'
     DB_TEST_SCHEMA_NAME = 'vectordb'
@@ -48,9 +52,10 @@ class ServiceConfig(Enum):
     DB_TEST_HISTORY_ID = 846264338
     #-------------------------------------------------------------------------------------------#
 
-
     # REPORT
     #-------------------------------------------------------------------------------------------#
     REPORT_RESPONSE_TIME_ZONE_UNIT = 60
     REPORT_CONCURRENT_TIME_ZONE_UNIT = 60
+    REPORT_TYPE_1 = 'SMALL'
+    REPORT_TYPE_2 = 'BIG'
     #-------------------------------------------------------------------------------------------#

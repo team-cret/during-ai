@@ -36,6 +36,7 @@ class ReportRequest(BaseModel):
     couple_id:str = ''
     start_date:datetime = datetime.now()
     end_date:datetime = datetime.now()
+    couple_member_ids:list[str] = []
 
 class Report(BaseModel):
     report_type:str = ''
@@ -64,3 +65,8 @@ class Report(BaseModel):
             'sweetness_score' : self.sweetness_score,
             'average_reply_term' : self.average_reply_term,
         }
+
+class ConnectionLog(BaseModel):
+    user_id:str = ''
+    timestamp:datetime = datetime.now()
+    connection_type:str = ServiceConfig.DB_CONNECTION_LOGIN.value # LOGIN, LOGOUT
