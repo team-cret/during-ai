@@ -18,6 +18,9 @@ class Tester:
         time_start = time()
         from test.unit.db_test import DBTester
         print('success import DBTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
+        time_start = time()
+        from test.unit.generation_json import GenerationJsonTester
+        print('success import GenerationJsonTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
         #---------------------------------------------------------------------------#
 
         # service test
@@ -37,13 +40,14 @@ class Tester:
         #---------------------------------------------------------------------------#
         time_start = time()
         self.test_setup = {
-            'embedding_model'      : [False, EmbeddingModelTester()],
-            'classification_model' : [False, ClassificationModelTester()],
-            'db'                   : [False, DBTester()],
+            # 'embedding_model'      : [False, EmbeddingModelTester()],
+            # 'classification_model' : [False, ClassificationModelTester()],
+            # 'db'                   : [False, DBTester()],
+            # 'generation_json'      : [True, GenerationJsonTester()],
 
-            'motion_analyzer'      : [False, MotionAnalyzerTester()],
-            'chat_generator'       : [False, GomduChatGeneratorTester()],
-            'report_generator'     : [True, ReportGeneratorTester()],
+            'motion_analyzer'      : [True, MotionAnalyzerTester()],
+            # 'chat_generator'       : [False, GomduChatGeneratorTester()],
+            # 'report_generator'     : [False, ReportGeneratorTester()],
         }
         print('successfully end setup for test' + f'elapsed time : {time() - time_start:.2f} sec')
         #---------------------------------------------------------------------------#

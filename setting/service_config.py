@@ -13,7 +13,6 @@ class ServiceConfig(Enum):
     MOTION_ANALYZER_V0_TYPE = 'classification'
     MOTION_ANALYZER_V0_MODULE = 'pogjin_roberta'
     MOTION_ANALYZER_V0_CLASS = 'PongjinRobertaTextClassification'
-    MOTION_ANALYZER_V0_AI_MODEL_NAME = ModelConfig.KO_SROBERTA_EMBEDDING_MODEL_NAME.value
 
     MOTION_ANALYZER_V1_MODULE1 = 'pogjin_roberta'
     MOTION_ANALYZER_V1_CLASS1 = 'PongjinRobertaTextClassification'

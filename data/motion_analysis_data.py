@@ -3,30 +3,33 @@
 # 1 : mixed
 # 2 : cuty tone
 # 3 : space, punctuation
-# 4 : honofic
+# 4 : honorfics
 # 5 : difficult
 
 data = [
     # solo interaction
-    # 1000 : {'sentiment' : '웃기'},
+    # 1000 : {'motion' : '웃기'},
     {'contents_type' : 'text', 'label' : '웃기', 'type': 0, 'content' : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ'},
-    # 1001 : {'sentiment' : '화내기'},
+    # 1001 : {'motion' : '화내기'},
     {'contents_type' : 'text', 'label' : '화내기', 'type': 0, 'content' : '화낼거야'},
-    # 1002 : {'sentiment' : '사랑해'},
+    # 1002 : {'motion' : '사랑해'},
     {'contents_type' : 'text', 'label' : '사랑해', 'type' : 0, 'content' : '사랑해'},
     {'contents_type' : 'text', 'label' : '사랑해', 'type' : 3, 'content' : '사랑해요'},
     {'contents_type' : 'text', 'label' : '사랑해', 'type' : 2, 'content' : '사댱행'},
     {'contents_type' : 'text', 'label' : '사랑해', 'type' : 2, 'content' : '사댱해'},
     {'contents_type' : 'text', 'label' : '사랑해', 'type' : 1, 'content' : '사댱해요'},
-    # 1003 : {'sentiment' : '부끄러움'},
-    # 1004 : {'sentiment' : '응원하기'},
+    # 1003 : {'motion' : '부끄러움'},
+    {'contents_type' : 'text', 'label' : '부끄러움', 'type' : 0, 'content' : '부끄러워'},
+    # 1004 : {'motion' : '응원하기'},
     {'contents_type' : 'text', 'label' : '응원하기', 'type' : 3, 'content' : '오늘도 화이팅 하고 와요!'},
     {'contents_type' : 'text', 'label' : '응원하기', 'type' : 1, 'content' : '오늘도 화이팅 하구 와요!'},
     {'contents_type' : 'text', 'label' : '응원하기', 'type' : 3, 'content' : '오늘도 잘 하고 와요!'},
     {'contents_type' : 'text', 'label' : '응원하기', 'type' : 0, 'content' : '오늘도 잘 하고와'},
     {'contents_type' : 'text', 'label' : '응원하기', 'type' : 0, 'content' : '잘 하고와'},
-    # 1005 : {'sentiment' : '안아줘요'},
-    # 1006 : {'sentiment' : '손 흔들기'},
+    # 1005 : {'motion' : '안아줘요'},
+    {'contents_type' : 'text', 'label' : '안아줘요', 'type' : 0, 'content' : '안아줘'},
+    {'contents_type' : 'text', 'label' : '안아줘요', 'type' : 0, 'content' : '무서워'},
+    # 1006 : {'motion' : '손 흔들기'},
     {'contents_type' : 'text',  'label' : '손 흔들기', 'type' : 0, 'content' : '안녕'},
     {'contents_type' : 'text',  'label' : '손 흔들기', 'type' : 2, 'content' : '안뇽'},
     {'contents_type' : 'text',  'label' : '손 흔들기', 'type' : 2, 'content' : '안냥'},
@@ -37,16 +40,19 @@ data = [
     {'contents_type' : 'text',  'label' : '손 흔들기', 'type' : 3, 'content' : '잘 자요'},
     {'contents_type' : 'text',  'label' : '손 흔들기', 'type' : 3, 'content' : '잘 자요~'},
     {'contents_type' : 'text',  'label' : '손 흔들기', 'type' : 3, 'content' : '잘 자요~!'},
-    # 1007 : {'sentiment' : '피곤함'},
+    # 1007 : {'motion' : '피곤함'},
     {'contents_type' : 'text', 'label' : '피곤함', 'type' : 0, 'content' : '오늘은 너무 피곤해'},
     {'contents_type' : 'text', 'label' : '피곤함', 'type' : 0, 'content' : '오늘은 좀 힘드네'},
     {'contents_type' : 'text', 'label' : '피곤함', 'type' : 0, 'content' : '오늘은 쉬고싶어'},
     {'contents_type' : 'text', 'label' : '피곤함', 'type' : 0, 'content' : '쉬고싶어'},
 
     # # multi interaction
-    # 2000 : {'sentiment' : '포옹하기'},
-    # 2001 : {'sentiment' : '뽀뽀하기'},
-    # 2002 : {'sentiment' : '쓰다듬기'},
+    # 2000 : {'motion' : '포옹하기'},
+    {'contents_type' : 'text', 'label' : '포옹하기', 'type' : 0, 'content' : '포옹'},
+    # 2001 : {'motion' : '뽀뽀하기'},
+    {'contents_type' : 'text', 'label' : '뽀뽀하기', 'type' : 0, 'content' : '뽀뽀'},
+    {'contents_type' : 'text', 'label' : '뽀뽀하기', 'type' : 0, 'content' : '쪽'},
+    # 2002 : {'motion' : '쓰다듬기'},
     {'contents_type' : 'text', 'label' : '쓰다듬기', 'type' : 0, 'content' : '오늘도 고생했어'},
     {'contents_type' : 'text', 'label' : '쓰다듬기', 'type' : 2, 'content' : '오늘도 고생했져'},
 
@@ -58,10 +64,14 @@ data = [
     {'contents_type' : 'text', 'label' : '밥먹기', 'type' : 4, 'content' : '밥 먹고 올게요'},
     {'contents_type' : 'text', 'label' : '밥먹기', 'type' : 1, 'content' : '밥 머꾸 올게요'},
     {'contents_type' : 'text', 'label' : '밥먹기', 'type' : 2, 'content' : '밥 머꾸 오꼐'},
-    # 3001 : {'sentiment' : '노트북하기'},
+    # 3001 : {'motion' : '노트북하기'},
     {'contents_type' : 'text', 'label' : '노트북하기', 'type' : 0, 'content' : '공부하고 있어'},
-    # 3002 : {'sentiment' : '운동하기'},
-    # 3003 : {'sentiment' : '잠자기'},
+    # 3002 : {'motion' : '운동하기'},
+    # 3003 : {'motion' : '잠자기'},
+    {'contents_type' : 'text', 'label' : '잠자기', 'type' : 0, 'content' : '나 먼저 자러 갈게'},
+    {'contents_type' : 'text', 'label' : '잠자기', 'type' : 0, 'content' : '자러 갈게'},
+    {'contents_type' : 'text', 'label' : '잠자기', 'type' : 0, 'content' : '잘자'},
+    {'contents_type' : 'text', 'label' : '잠자기', 'type' : 4, 'content' : '잘자요'},
 
     # None
     {'contents_type' : 'text', 'label' : '없음', 'type' : 3, 'content' : '오늘은 뭐해?'},

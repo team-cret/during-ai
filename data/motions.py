@@ -25,3 +25,19 @@ motions = {
 motion_to_id = {}
 for key, value in motions.items():
     motion_to_id[value['motion']] = key
+
+# '웃기'	laugh
+# '화내기'	angry
+# '사랑해'	love-you
+# '부끄러움'	shy
+# '응원하기'	cheer-up
+# '안아줘요'	hug-me
+# '손 흔들기'	waving
+# '피곤함'	tired
+# '포옹하기'	hug
+# '뽀뽀하기'	kiss
+# '쓰다듬기'	pat
+# '밥먹기'	eat
+# '노트북하기'	study
+# '운동하기'	exercise
+# '잠자기'	sleep

@@ -1,4 +1,5 @@
 import importlib
+import logging
 
 import numpy as np
 
@@ -8,20 +9,24 @@ from ai_model.generation.generation import Generation
 from data.motions import motion_to_id, motions
 from model.data_model import CoupleChat, Motion
 from setting.service_config import ServiceConfig
+from setting.logger_setting import logger_setting
 from service.motion_analysis.keyword_analyzer import KeywordAnalyzer
 from service.motion_analysis.motion_analyzer import MotionAnalyzer
-
 
 class MotionAnalyzerV0(MotionAnalyzer):
     def __init__(self) -> None:
         self.set_analyzer()
         self.keyword_analyzer = KeywordAnalyzer()
+        self.set_logger()
+    
+    def set_logger(self) -> None:
+        logger_setting()
+        self.logger = logging.getLogger(__name__)
     
     def set_analyzer(self) -> None:
         self.analyzer_type = ServiceConfig.MOTION_ANALYZER_V0_TYPE.value
         self.module_name = ServiceConfig.MOTION_ANALYZER_V0_MODULE.value
         self.class_name = ServiceConfig.MOTION_ANALYZER_V0_CLASS.value
-        self.ai_model_name = ServiceConfig.MOTION_ANALYZER_V0_AI_MODEL_NAME.value
 
         module = importlib.import_module(f'ai_model.{self.analyzer_type}.{self.module_name}')
         ai_model_class = getattr(module, self.class_name)
@@ -30,29 +35,53 @@ class MotionAnalyzerV0(MotionAnalyzer):
 
         if self.analyzer_type == 'embedding':
             self.get_embedded_motions()
-
-    def analyze_motion(self, chat:CoupleChat) -> Motion:
-        if keyword := self.keyword_analyzer.is_keyword(chat.message):
-            return Motion(
-                motion=keyword,
-                motion_id=motion_to_id[keyword]
-            )
-        
-        if self.analyzer_type == 'classification':
-            return self.analyze_by_classification(chat.message)
-        elif self.analyzer_type == 'embedding':
-            return self.analyze_by_embedding(chat.message)
-        elif self.analyzer_type == 'llm_json':
-            return self.analyze_by_llm_json(chat.message)
     
+    def return_none_motion(self) -> Motion:
+        return Motion(
+            motion='없음',
+            motion_id=9999
+        )
+
+    def analyze_motion(self, chat: CoupleChat) -> Motion:
+        try:
+            # keyword analyze
+            if keyword := self.keyword_analyzer.is_keyword(chat.message):
+                return keyword
+            
+            # length limit
+            if len(chat.message) > 30:
+                return self.return_none_motion()
+            
+            # ai model analyze
+            if self.analyzer_type == 'classification':
+                return self.analyze_by_classification(chat.message)
+            elif self.analyzer_type == 'embedding':
+                return self.analyze_by_embedding(chat.message)
+            elif self.analyzer_type == 'generation':
+                return self.analyze_by_llm(chat)
+            
+            # 알 수 없는 analyzer_type인 경우
+            return self.return_none_motion()
+        except Exception as e:
+            # 예외 발생 시 로깅 추가
+            print(f"Motion analysis error: {str(e)}")
+            # 오류 발생 시 기본값 반환
+            return self.return_none_motion()
+
     def analyze_by_classification(self, message:str) -> Motion:
         self.ai_model: TextClassification
         classify_result = self.ai_model.classify_text(message)
 
-        return {
-            'motion': classify_result['motions'][0], 
-            'motion_id': motion_to_id[classify_result['motions'][0]],
-        }
+        if classify_result['scores'][0] < 0.5:
+            return self.return_none_motion()
+        
+        if np.var(classify_result['scores']) < 0.03:
+            return self.return_none_motion()
+
+        return Motion(
+            motion=classify_result['motions'][0],
+            motion_id=motion_to_id[classify_result['motions'][0]],
+        )
 
     def analyze_by_embedding(self, message:str) -> Motion:
         self.ai_model: Embedding
@@ -68,10 +97,7 @@ class MotionAnalyzerV0(MotionAnalyzer):
                 max_motion_id = motion_id
         
         if max_motion_id == -1:
-            return Motion(
-                motion='없음',
-                motion_id=-1
-            )
+            return self.return_none_motion()
         
         return Motion(
             motion=motions[max_motion_id]['motion'],
@@ -92,8 +118,4 @@ class MotionAnalyzerV0(MotionAnalyzer):
         self.ai_model: Generation
         response = self.ai_model.analyze_motion(chat=chat)
 
-        print(response)
-        return Motion(
-            motion='없음',
-            motion_id=-1
-        )
+        return response

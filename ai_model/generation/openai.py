@@ -4,7 +4,7 @@ from openai import OpenAI
 
 from data.gomdu_prompt import gomdu_system_prompt
 from data.motion_analysis_prompt import motion_analysis_prompt
-from model.data_model import CoupleChat, Motion, RetrievedData
+from model.data_model import CoupleChat, Motion, RetrievedData, MotionJson
 from setting.config import Config
 from setting.model_config import ModelConfig
 
@@ -57,15 +57,15 @@ class OpenAITextGenerator:
         return response.choices[0].message.content
 
     def analyze_motion(self, chat:CoupleChat) -> Motion:
-        result = self.client.chat.completions.parse(
-            model='gpt-4o-mini',
+        result = self.client.beta.chat.completions.parse(
+            model='gpt-4o-mini-2024-07-18',
             messages=[
-                {
-                    'role' : 'system', 
-                    'content' : motion_analysis_prompt
-                },
-                {'role' : 'user', 'content' : chat.content}
+                {'role' : 'system', 'content' : motion_analysis_prompt},
+                {'role' : 'user', 'content' : chat.message}
             ],
-            response_model=Motion,
+            response_format=MotionJson,
         )
-        return result
+        return Motion(
+            motion = result.choices[0].message.parsed.motion,
+            motion_id = result.choices[0].message.parsed.motion_id
+        )

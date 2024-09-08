@@ -26,6 +26,10 @@ class Motion(BaseModel):
     motion: str = ''
     motion_id: int = 0
 
+class MotionJson(BaseModel):
+    motion: str
+    motion_id: int
+
 class RetrievedData(BaseModel):
     chunk_id: int = 0
     summary: str = ''

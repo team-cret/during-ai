@@ -17,7 +17,7 @@ class PongjinRobertaTextClassification(TextClassification):
             'zero-shot-classification',
             args_parser=CustomZeroShotClassificationArgumentHandler(),
             model=ModelConfig.PONGJIN_ROBERTA_CLASSIFICATION_MODEL.value,
-            device=-1,
+            device=ModelConfig.CLASSIFICATION_MODEL_DEVICE.value,
         )
 
     def classify_text(self, text:str) -> dict:
