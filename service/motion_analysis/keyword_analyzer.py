@@ -1,7 +1,5 @@
 from collections import Counter
 
-from tabulate import tabulate
-
 from data.motion_keyword import matched_keywords
 from data.motions import motion_to_id
 from model.data_model import Motion
