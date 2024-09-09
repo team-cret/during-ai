@@ -1,14 +1,21 @@
 from abc import ABC, abstractmethod
+import logging
 
 from transformers import pipeline
 
 from ai_model.classification.text_classification import TextClassification
 from data.motions import motions
+from setting.logger_setting import logger_setting
 from setting.model_config import ModelConfig
 
 class PongjinRobertaTextClassification(TextClassification):
     def __init__(self) -> None:
         self.set_model()
+        self.set_logger()
+    
+    def set_logger(self) -> None:
+        logger_setting()
+        self.logger = logging.getLogger(__name__)
 
     def set_model(self) -> None:
         self.motions = [value['motion'] for value in motions.values()]
@@ -21,16 +28,23 @@ class PongjinRobertaTextClassification(TextClassification):
         )
 
     def classify_text(self, text:str) -> dict:
-        result = self.classifier(
-            text,
-            candidate_labels=self.motions,
-            hypothesis_template="이 문장에서 느껴지는 감정은 {}이다.",
-        )
-        
-        return {
-            'motions' : result['labels'],
-            'scores' : result['scores']
-        }
+        try:
+            result = self.classifier(
+                text,
+                    candidate_labels=self.motions,
+                hypothesis_template="이 문장에서 느껴지는 감정은 {}이다.",
+            )
+
+            return {
+                'motions' : result['labels'],
+                'scores' : result['scores']
+            }
+        except Exception as e:
+            self.logger.error(f"classification model error: {str(e)}")
+            return {
+                'motions' : [],
+                'scores' : []
+            }
     
     def is_affection(self, text:str) -> bool:
         result = self.classifier(

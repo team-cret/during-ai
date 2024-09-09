@@ -63,25 +63,27 @@ class MotionAnalyzerV0(MotionAnalyzer):
             # 알 수 없는 analyzer_type인 경우
             return self.return_none_motion()
         except Exception as e:
-            # 예외 발생 시 로깅 추가
-            print(f"Motion analysis error: {str(e)}")
-            # 오류 발생 시 기본값 반환
+            self.logger.info(f'motion analyzerv0 error: {str(e)}')
             return self.return_none_motion()
 
-    def analyze_by_classification(self, message:str) -> Motion:
-        self.ai_model: TextClassification
-        classify_result = self.ai_model.classify_text(message)
+    def analyze_by_classification(self, message: str) -> Motion:
+        try:
+            self.ai_model: TextClassification
+            classify_result = self.ai_model.classify_text(message)
 
-        if classify_result['scores'][0] < 0.5:
-            return self.return_none_motion()
-        
-        if np.var(classify_result['scores']) < 0.03:
-            return self.return_none_motion()
+            if classify_result['scores'][0] < 0.5:
+                return self.return_none_motion()
+            
+            if np.var(classify_result['scores']) < 0.03:
+                return self.return_none_motion()
 
-        return Motion(
-            motion=classify_result['motions'][0],
-            motion_id=motion_to_id[classify_result['motions'][0]],
-        )
+            return Motion(
+                motion=classify_result['motions'][0],
+                motion_id=motion_to_id[classify_result['motions'][0]],
+            )
+        except Exception as e:
+            self.logger.error(f"classification error: {str(e)}")
+            return self.return_none_motion()
 
     def analyze_by_embedding(self, message:str) -> Motion:
         self.ai_model: Embedding

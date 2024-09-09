@@ -27,7 +27,6 @@ class Motion(BaseModel):
     motion_id: int = 0
 
 class MotionJson(BaseModel):
-    motion: str
     motion_id: int
 
 class RetrievedData(BaseModel):
