@@ -19,6 +19,9 @@ class Gomdu:
         module = importlib.import_module(f'ai_model.embedding.{ServiceConfig.GOMDU_CHAT_EMBEDDING_MODULE.value}')
         self.embedding_class = getattr(module, ServiceConfig.GOMDU_CHAT_EMBEDDING_CLASS.value)
 
+        module = importlib.import_module(f'ai_model.reranker.{ServiceConfig.GOMDU_CHAT_RERANKER_MODULE.value}')
+        self.reranker_class = getattr(module, ServiceConfig.GOMDU_CHAT_RERANKER_CLASS.value)
+
     def make_new_generator(self, chat:GomduChat) -> None:
         self.generators[chat.history_id] = {
             'llm' : self.llm_class(),
@@ -26,6 +29,7 @@ class Gomdu:
             'memory' : deque(maxlen=ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value),
             'db' : DB(),
             'vector_db' : VectorDB(),
+            'reranker' : self.reranker_class()
         }
 
     def generate_chat(self, chat:GomduChat) -> str:
@@ -78,14 +82,20 @@ class Gomdu:
         db_retrieved_data = generator['vector_db'].retrieve_data(chat.couple_id, embedded_chat)
 
         # reranking algorithm
-        reranked_data = self.rerank_data(db_retrieved_data)
+        reranked_data = self.rerank_data(db_retrieved_data, generator, chat)
         return reranked_data
     
     def embed_text(self, chat:GomduChat, generator:dict) -> list:
         return generator['embedding'].embed_text(chat.message)
     
-    def rerank_data(self, retrieved_data:list[RetrievedData]) -> list[RetrievedData]:
-        return retrieved_data
+    def rerank_data(self, retrieved_data:list[RetrievedData], generator:dict, chat:GomduChat) -> list[RetrievedData]:
+        reranked_data, scores = generator['reranker'].rerank_documents(retrieved_data, chat.message)
+        print('------------------reranke data ----------------')
+        for score, data in zip(scores, reranked_data):
+            data: RetrievedData
+            print(score, data.summary)
+        print('-----------------------------------------------')
+        return reranked_data[:ServiceConfig.RERANKER_TOP_K.value]
     
     def generate_prompt(self, chat:GomduChat, retrieved_data:list[RetrievedData]) -> str:
         return chat.message, ' '.join([data.summary for data in retrieved_data])

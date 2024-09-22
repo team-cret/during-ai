@@ -50,7 +50,7 @@ class VectorDB:
             retrieved_data = session.execute(
                 sql, 
                 {
-                    "limit": ServiceConfig.RETRIEVAL_TOP_K.value, 
+                    "limit": ServiceConfig.DB_RETRIEVAL_TOP_K.value, 
                     "vec": query_vector_sql,
                     "couple_id": couple_id
                 }

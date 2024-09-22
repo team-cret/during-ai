@@ -34,8 +34,12 @@ class ServiceConfig(Enum):
     GOMDU_CHAT_STREAM_MODE = False
     GOMDU_CHAT_USER_NAME = 'user'
     GOMDU_CHAT_AI_NAME = 'gomdu'
+    GOMDU_CHAT_SYSTEM_NAME = 'system'
+    GOMDU_CHAT_RERANKER_MODULE = 'bge_reranker_v2_m3'
+    GOMDU_CHAT_RERANKER_CLASS = 'BgeRerankerV2M3'
 
-    RETRIEVAL_TOP_K = 3
+    DB_RETRIEVAL_TOP_K = 15
+    RERANKER_TOP_K = 5
     #-------------------------------------------------------------------------------------------#
 
     # DB

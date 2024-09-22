@@ -36,4 +36,4 @@ class GomduChatGeneratorTester:
             )
 
             gomdu_response = self.gomdu.generate_chat(chat)
-            print('gomdu response:', gomdu_response)
+            print('gomdu response:', gomdu_response.message)
