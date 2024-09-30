@@ -7,12 +7,16 @@ from setting.model_config import ModelConfig
 class ServiceConfig(Enum):
     # MOTION ANALYSIS
     #-------------------------------------------------------------------------------------------#
-    CURRENT_MOTION_ANALYZER_MODULE = 'motion_analyzer_v0'
-    CURRENT_MOTION_ANALYZER_CLASS = 'MotionAnalyzerV0'
+    CURRENT_MOTION_ANALYZER_MODULE = 'motion_analyzer_v0_1'
+    CURRENT_MOTION_ANALYZER_CLASS = 'MotionAnalyzerV01'
 
     MOTION_ANALYZER_V0_TYPE = 'classification'
     MOTION_ANALYZER_V0_MODULE = 'pogjin_roberta'
     MOTION_ANALYZER_V0_CLASS = 'PongjinRobertaTextClassification'
+
+    MOTION_ANALYZER_V0_1_TYPE = 'classification'
+    MOTION_ANALYZER_V0_1_MODULE = 'pogjin_roberta'
+    MOTION_ANALYZER_V0_1_CLASS = 'PongjinRobertaTextClassification'
 
     MOTION_ANALYZER_V1_MODULE1 = 'pogjin_roberta'
     MOTION_ANALYZER_V1_CLASS1 = 'PongjinRobertaTextClassification'

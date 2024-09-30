@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import logging
+from concurrent.futures import ProcessPoolExecutor
 
 from transformers import pipeline
 
@@ -27,6 +28,15 @@ class PongjinRobertaTextClassification(TextClassification):
             device=ModelConfig.CLASSIFICATION_MODEL_DEVICE.value,
         )
 
+        self.classifiers = [
+            pipeline(
+                'zero-shot-classification',
+                args_parser=CustomZeroShotClassificationArgumentHandler(),
+                model=ModelConfig.PONGJIN_ROBERTA_CLASSIFICATION_MODEL.value,
+                device=ModelConfig.CLASSIFICATION_MODEL_DEVICE.value,
+            ) for _ in range(3)
+        ]
+
     def classify_text(self, text:str) -> dict:
         try:
             result = self.classifier(
@@ -46,6 +56,25 @@ class PongjinRobertaTextClassification(TextClassification):
                 'scores' : []
             }
     
+    def classify_text_by_hypothesis(self, text:str, hypothesis:str, labels:list[str]) -> dict:
+        try:
+            result = self.classifier(
+                text,
+                candidate_labels=labels,
+                hypothesis_template=hypothesis,
+            )
+
+            return {
+                'labels' : result['labels'],
+                'scores' : result['scores']
+            }
+        except Exception as e:
+            self.logger.error(f"classification model error: {str(e)}")
+            return {
+                'motions' : [],
+                'scores' : []
+            }
+
     def is_affection(self, text:str) -> bool:
         result = self.classifier(
             text,
