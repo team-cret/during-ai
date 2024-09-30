@@ -31,6 +31,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": "input data validation error"}
     )
 
+@app.get("/health")
+async def health_check():
+    return JSONResponse(status_code=200, content={"status": "healthy"})
+
 @app.post("/api/service/motion-analysis")
 def analyze_motion(chat: CoupleChat) -> MotionJson:
     try:
