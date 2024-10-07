@@ -13,7 +13,7 @@ class ModelConfig(Enum):
     BART_LARGE_MNLI_CLASSIFICATION_MODEL = 'facebook/bart-large-mnli'
     MDEBERTA_XNLI_CLASSIFICATION_MODEL = 'MoritzLaurer/mDeBERTa-v3-base-mnli-xnli'
     PONGJIN_ROBERTA_CLASSIFICATION_MODEL = 'pongjin/roberta_with_kornli'
-    CLASSIFICATION_MODEL_DEVICE = -1 # 0<=: gpu, -1: cpu
+    CLASSIFICATION_MODEL_DEVICE = -1 # 0 <=: gpu, -1: cpu
     #---------------------------------------------------------------------------#
 
     # Reranker Model

@@ -36,6 +36,12 @@ class RetrievedData(BaseModel):
     original_message: str = ''
     couple_chat_ids: list[int] = []
 
+class ChunkedData(BaseModel):
+    chunk_id: int = 0
+    chunk: str = ''
+    vector: list[float] = []
+    couple_chat_ids: list[int] = []
+
 class ReportRequest(BaseModel):
     couple_id:str = ''
     start_date:datetime = datetime.now()
