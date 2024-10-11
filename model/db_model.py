@@ -33,7 +33,6 @@ class PetChatMessage(Base):
     sender = Column(String)
     content = Column(String)
     chat_date = Column(String)
-    pet_chat_history_id = Column(Integer)
     member_id = Column(String)
     couple_id = Column(String)
 
@@ -75,3 +74,12 @@ class MemberActivity(Base):
             connection_type=self.active_type,
             timestamp=self.active_date
         )
+
+class Couple(Base):
+    __tablename__ = 'couple'
+    __table_args__ = {'schema': ServiceConfig.DB_TEST_SCHEMA_NAME.value}
+    couple_id = Column(String, primary_key=True)
+    cash_point = Column(Integer)
+    strat_date = Column(String)
+    end_date = Column(String)
+    state = Column(String)

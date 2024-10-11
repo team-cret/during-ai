@@ -40,7 +40,7 @@ class Tester:
         #---------------------------------------------------------------------------#
         time_start = time()
         self.test_setup = {
-            # 'embedding_model'      : [False, EmbeddingModelTester()],
+            'embedding_model'      : [True, EmbeddingModelTester()],
             # 'classification_model' : [False, ClassificationModelTester()],
             # 'db'                   : [False, DBTester()],
             # 'generation_json'      : [True, GenerationJsonTester()],

@@ -7,6 +7,7 @@ from data.motion_analysis_prompt import motion_analysis_prompt
 from model.data_model import CoupleChat, Motion, RetrievedData, MotionJson
 from setting.config import Config
 from setting.model_config import ModelConfig
+from setting.service_config import ServiceConfig
 
 class OpenAITextGenerator:
     def __init__(self) -> None:
@@ -26,19 +27,19 @@ class OpenAITextGenerator:
                 'content' : f'이번에 답할 때는 커플 대화내용 중에서 [{retrieved_prompt}] 이 부분을 참고해서 대답해줘 이 부분을 참고해도 모르겠으면 모른다고 대답해줘'
             }
         ]
-
+    
         for story in history:
-            if story['role'] == 'assi':
+            if story['role'] == ServiceConfig.GOMDU_CHAT_AI_NAME.value:
                 processed_history.append({
                     'role' : 'assistant',
                     'content' : story['text']
                 })
-            elif story['role'] == 'user':
+            elif story['role'] == ServiceConfig.GOMDU_CHAT_USER_NAME.value:
                 processed_history.append({
                     'role' : 'user',
                     'content' : story['text']
                 })
-            elif story['role'] == 'system':
+            elif story['role'] == ServiceConfig.GOMDU_CHAT_SYSTEM_NAME.value:
                 processed_history.append({
                     'role' : 'system',
                     'content' : story['content']
