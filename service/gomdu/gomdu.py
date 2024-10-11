@@ -89,11 +89,7 @@ class Gomdu:
     
     def rerank_data(self, retrieved_data:list[RetrievedData], generator:dict, chat:GomduChat) -> list[RetrievedData]:
         reranked_data, scores = generator['reranker'].rerank_documents(retrieved_data, chat.message)
-        print('------------------reranke data ----------------')
-        for score, data in zip(scores, reranked_data):
-            data: RetrievedData
-            print(score, data.summary)
-        print('-----------------------------------------------')
+
         return reranked_data[:ServiceConfig.RERANKER_TOP_K.value]
     
     def generate_prompt(self, chat:GomduChat, retrieved_data:list[RetrievedData]) -> str:

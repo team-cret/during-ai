@@ -25,17 +25,18 @@ CREATE TABLE vectordb.pet_chat_message (
     couple_id UUID NOT NULL,
     FOREIGN KEY (pet_chat_history_id) REFERENCES vectordb.pet_chat_history(pet_chat_history_id)
 );
-CREATE TABLE vectordb.chunk (
+CREATE TABLE public.chunk (
     chunk_id BIGINT NOT NULL PRIMARY KEY,
     vector vector(768) NOT NULL,
     summary TEXT NOT NULL,
-    couple_id UUID NOT NULL
+    couple_id UUID NOT NULL,
+    FOREIGN KEY (couple_id) REFERENCES public.couple(couple_id)
 );
-CREATE TABLE vectordb.chunked_couple_chat (
+CREATE TABLE public.chunked_couple_chat (
     chunk_id BIGINT NOT NULL,
-    couple_chat_id BIGINT NOT NULL,
-    FOREIGN KEY (chunk_id) REFERENCES vectordb.chunk(chunk_id),
-    FOREIGN KEY (couple_chat_id) REFERENCES vectordb.couple_chat_message(couple_chat_id)
+    couple_chat_message_id BIGINT NOT NULL,
+    FOREIGN KEY (chunk_id) REFERENCES public.chunk(chunk_id),
+    FOREIGN KEY (couple_chat_message_id) REFERENCES public.couple_chat_message(couple_chat_message_id)
 );
 CREATE TABLE vectordb.member_activity
 (
