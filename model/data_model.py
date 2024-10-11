@@ -5,14 +5,13 @@ from pydantic import BaseModel
 from setting.service_config import ServiceConfig
 
 class GomduChat(BaseModel):
-    chat_id: int = 0
     sender: str = 'user'
     message: str = ''
-    title:str = ''
-    history_id: int = 0
     user_id: str = ''
     couple_id: str = ''
-    timestamp: datetime = datetime.now()
+
+class GomduChatResponse(BaseModel):
+    message:str = ''
 
 class CoupleChat(BaseModel):
     chat_id: int = 0
@@ -20,7 +19,6 @@ class CoupleChat(BaseModel):
     message: str = ''
     user_id: str = ''
     couple_id: str = ''
-    timestamp: datetime = datetime.now()
 
 class Motion(BaseModel):
     motion: str = ''
@@ -56,7 +54,7 @@ class Report(BaseModel):
     concurrent_time_zone: list = [0 for _ in range(round(24/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
     frequently_talked_topic: list = []
     frequently_used_emotion: list = [('', 0) for _ in range(6)]
-    frequency_of_affection: float = 0
+    frequency_of_affection: timedelta = timedelta(0)
     number_of_love_words:int = 0
     sweetness_score:float = 0
     average_reply_term:timedelta = timedelta(0)
@@ -75,6 +73,13 @@ class Report(BaseModel):
             'sweetness_score' : self.sweetness_score,
             'average_reply_term' : self.average_reply_term,
         }
+
+class GomduHistoryId(BaseModel):
+    couple_id:str = ''
+    user_id:str = ''
+
+class DeletionResult(BaseModel):
+    is_success:bool = False
 
 class ConnectionLog(BaseModel):
     user_id:str = ''

@@ -27,7 +27,7 @@ CREATE TABLE vectordb.pet_chat_message (
 );
 CREATE TABLE vectordb.chunk (
     chunk_id BIGINT NOT NULL PRIMARY KEY,
-    vector vector(1536) NOT NULL,
+    vector vector(768) NOT NULL,
     summary TEXT NOT NULL,
     couple_id UUID NOT NULL
 );

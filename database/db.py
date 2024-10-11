@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from model.data_model import CoupleChat, GomduChat, ReportRequest, ConnectionLog
-from model.db_model import CoupleChatMessage, PetChatMessage, MemberActivity
+from model.db_model import CoupleChatMessage, PetChatMessage, MemberActivity, Couple
 from setting.env_setting import EnvSetting
 from setting.service_config import ServiceConfig
 
@@ -31,17 +31,19 @@ class DB:
 
             session.close()
             chat_data = [couple_chat.parse_to_couple_chat() for couple_chat in chat_data]
+            for chat in chat_data:
+                chat.message = chat.message
             return chat_data
         except Exception as e:
             print(f"Couple chat load error: {str(e)}")
             return []
     
-    def get_gomdu_history(self, couple_id:str, history_id:int) -> list[GomduChat]:
+    def get_gomdu_history(self, couple_id:str, user_id:str) -> list[GomduChat]:
         try:
             session = self.get_session()
             query = session.query(PetChatMessage).filter(
                 PetChatMessage.couple_id == str(couple_id),
-                PetChatMessage.pet_chat_history_id == history_id
+                PetChatMessage.member_id == user_id
             ).order_by(PetChatMessage.pet_chat_id).limit(ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value)
             
             gomdu_chat_history = query.all()
@@ -69,4 +71,20 @@ class DB:
             return member_activities
         except Exception as e:
             print(f"Member activity load error: {str(e)}")
+            return []
+    
+    def get_all_connected_couple(self):
+        try:
+            session = self.get_session()
+            query = session.query(Couple).filter(
+                Couple.state == 'connect'
+            )
+            
+            connected_couples = query.all()
+            
+            session.close()
+            connected_couple_ids = [connected_couple.couple_id for connected_couple in connected_couples]
+            return connected_couple_ids
+        except Exception as e:
+            print(f"Connected Couple Id load error: {str(e)}")
             return []
