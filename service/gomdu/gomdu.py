@@ -1,3 +1,4 @@
+from cachetools import TTLCache
 from collections import deque
 import importlib
 
@@ -23,14 +24,15 @@ class Gomdu:
         self.reranker_class = getattr(module, ServiceConfig.GOMDU_CHAT_RERANKER_CLASS.value)
 
     def make_new_generator(self, chat:GomduChat) -> None:
-        self.generators[(chat.user_id, chat.couple_id)] = {
-            'llm' : self.llm_class(),
-            'embedding' : self.embedding_class(),
-            'memory' : deque(maxlen=ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value),
-            'db' : DB(),
-            'vector_db' : VectorDB(),
-            'reranker' : self.reranker_class()
-        }
+        self.generators[(chat.user_id, chat.couple_id)] = {TTLCache(maxsize=6, ttl=ServiceConfig.GOMDU_CHAT_TTL.value)}
+        
+        generator = self.generators[(chat.user_id, chat.couple_id)]
+        generator['llm'] = self.llm_class()
+        generator['embedding'] = self.embedding_class()
+        generator['reranker'] = self.reranker_class()
+        generator['db'] = DB()
+        generator['vector_db'] = VectorDB()
+        generator['memory'] = deque(maxlen=ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value)
 
     def generate_chat(self, chat:GomduChat) -> str:
         if (chat.user_id, chat.couple_id) not in self.generators:
@@ -88,9 +90,10 @@ class Gomdu:
         return generator['embedding'].embed_text(chat.message)
     
     def rerank_data(self, retrieved_data:list[RetrievedData], generator:dict, chat:GomduChat) -> list[RetrievedData]:
-        reranked_data, scores = generator['reranker'].rerank_documents(retrieved_data, chat.message)
+        # reranked_data, scores = generator['reranker'].rerank_documents(retrieved_data, chat.message)
 
-        return reranked_data[:ServiceConfig.RERANKER_TOP_K.value]
+        # return reranked_data[:ServiceConfig.RERANKER_TOP_K.value]
+        return retrieved_data[:ServiceConfig.RERANKER_TOP_K.value]
     
     def generate_prompt(self, chat:GomduChat, retrieved_data:list[RetrievedData]) -> str:
         return chat.message, ' '.join([data.summary for data in retrieved_data])

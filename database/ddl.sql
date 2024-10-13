@@ -33,6 +33,7 @@ CREATE TABLE public.chunk (
     FOREIGN KEY (couple_id) REFERENCES public.couple(couple_id)
 );
 CREATE TABLE public.chunked_couple_chat (
+    chunked_couple_chat_id BIGINT NOT NULL PRIMARY KEY,
     chunk_id BIGINT NOT NULL,
     couple_chat_message_id BIGINT NOT NULL,
     FOREIGN KEY (chunk_id) REFERENCES public.chunk(chunk_id),

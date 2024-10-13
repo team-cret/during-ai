@@ -1,9 +1,10 @@
 import importlib
 from datetime import datetime
 
+from database.db_security_manager import DBSecurityManager
 from database.db import DB
 from database.vectordb import VectorDB
-from model.data_model import CoupleChat, ChunkedData
+from model.data_model import CoupleChat, ChunkedData, ReportRequest
 from model.db_model import Chunk, ChunkedCoupleChat
 from setting.service_config import ServiceConfig
 
@@ -11,6 +12,7 @@ class ChunkerV0:
     MINDATE = datetime(1970, 1, 1)
     MAXDATE = datetime(9999, 12, 31)
     def __init__(self):
+        self.db_encryptor = DBSecurityManager()
         self.db = DB()
         self.vectordb = VectorDB()
     
@@ -20,9 +22,12 @@ class ChunkerV0:
 
         self.chunk_num = 20
         self.chunk_id_num = 1
+        self.chunked_couple_chat_id_num = 1
     
-    def automatic_chunking(self, couple_id:str):
+    def automatic_chunking(self):
         target_couple = self.find_target_couple()
+        self.vectordb.delete_all_chunked_couple_chat()
+        self.vectordb.delete_all_chunks()
 
         for couple_id in target_couple:
             self.automatic_chunking_by_couple(couple_id)
@@ -34,14 +39,26 @@ class ChunkerV0:
         couple_chat = self.get_couple_chat(couple_id)
         chunked_couple_chat = self.chunk_couple_chat(couple_chat)
         embedded_couple_chat = self.embed_chunked_couple_chat(chunked_couple_chat)
+        print(len(couple_chat), len(chunked_couple_chat), len(embedded_couple_chat))
         
         self.update_vectordb_by_couple(couple_id, embedded_couple_chat)
 
     def get_couple_chat(self, couple_id:str):
-        self.db.get_couple_chat_for_period(couple_id, self.MINDATE, self.MAXDATE)
+        couple_chat_message = self.db.get_couple_chat_for_period(
+            ReportRequest(
+                couple_id=couple_id,
+                start_date=self.MINDATE,
+                end_date=self.MAXDATE
+            ))
+        
+        return [chat.parse_to_couple_chat() for chat in couple_chat_message]
 
     def chunk_couple_chat(self, couple_chat:list[CoupleChat]) -> list[list[CoupleChat]]:
         chunked_couple_chat = []
+        if len(couple_chat) == 0:
+            return chunked_couple_chat
+        
+        i = 0
         for i in range(len(couple_chat) // self.chunk_num):
             chunked_couple_chat.append(couple_chat[i*self.chunk_num:(i+1)*self.chunk_num])
         
@@ -68,12 +85,11 @@ class ChunkerV0:
         return embedded_couple_chat
 
     def update_vectordb_by_couple(self, couple_id:str, embedded_couple_chat:list[ChunkedData]):
-        self.vectordb.delete_all_chunks()
 
         chunk_couple_chat = [
             Chunk(
                 chunk_id=embedded_chat.chunk_id,
-                summary=embedded_chat.chunk,
+                summary=self.db_encryptor.encode_message(embedded_chat.chunk),
                 vector=embedded_chat.vector,
                 couple_id=couple_id,
             )
@@ -86,10 +102,12 @@ class ChunkerV0:
             for chat_id in embedded_chat.couple_chat_ids:
                 chunked_couple_chat.append(
                     ChunkedCoupleChat(
+                        chunked_couple_chat_id=self.chunked_couple_chat_id_num,
                         chunk_id=embedded_chat.chunk_id,
-                        couple_chat_id=chat_id
+                        couple_chat_message_id=chat_id
                     )
                 )
+                self.chunked_couple_chat_id_num += 1
         
         self.vectordb.insert_chunked_couple_chat(chunked_couple_chat)
         return True
