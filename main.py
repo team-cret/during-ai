@@ -46,7 +46,7 @@ def analyze_motion(chat: CoupleChat) -> MotionJson:
         logger.error(f"Error in motion analysis: {str(e)}")
         raise HTTPException(status_code=500, detail="motion analysis error")
 
-@app.post("/api/service/gomdu-chat")
+@app.post("/api/service/gomdu/chat")
 def generate_gomdu_chat(chat: GomduChat) -> GomduChatResponse:
     try:
         logger.info(f"Generating Gomdu chat for: {chat}")

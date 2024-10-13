@@ -22,10 +22,10 @@ class DBTester:
             )
         )
         print('couple chat load', '-' * 50)
-        print(data[0])
+        # print(data[0])
         
         print('gomdu history load', '-' * 50)
-        data = self.db.get_gomdu_history(ServiceConfig.DB_TEST_COUPLE_ID.value, ServiceConfig.DB_TEST_HISTORY_ID.value)
+        data = self.db.get_gomdu_history(ServiceConfig.DB_TEST_COUPLE_ID.value, ServiceConfig.DB_TEST_USER_ID_1.value)
 
         for d in data:
             print(d)
