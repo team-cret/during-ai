@@ -1,12 +1,15 @@
 from datetime import datetime
+import logging
+
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 from database.db_security_manager import DBSecurityManager
-from model.data_model import CoupleChat, GomduChat, RetrievedData
+from model.data_model import RetrievedData
 from model.db_model import Chunk, ChunkedCoupleChat
 from setting.service_config import ServiceConfig
 from setting.env_setting import EnvSetting
+from setting.logger_setting import logger_setting
 
 db_schema_type = {
     'test' : ServiceConfig.DB_TEST_SCHEMA_NAME.value,
@@ -18,6 +21,8 @@ class VectorDB:
     def __init__(self) -> None:
         self.set_db()
         self.db_encryptor = DBSecurityManager()
+        logger_setting()
+        self.logger = logging.getLogger(__name__)   
     
     def set_db(self):
         DATABASE_URL = EnvSetting().db_url
@@ -61,8 +66,8 @@ class VectorDB:
             session.close()
             return parsed_data
         except Exception as e:
-            session.rollback() 
-            print(f"데이터베이스에서 데이터를 가져오는 중 오류 발생: {str(e)}")
+            session.rollback()
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
             return []
         finally:
             if session:
@@ -78,7 +83,7 @@ class VectorDB:
             return True
         except Exception as e:
             session.rollback() 
-            print(f"데이터베이스에서 데이터를 가져오는 중 오류 발생: {str(e)}")
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
             return False
         finally:
             if session:
@@ -86,7 +91,7 @@ class VectorDB:
         
     def insert_chunked_couple_chat(self, chunked_couple_chat:list[ChunkedCoupleChat]):
         try:
-            session = sessionmaker(bind=self.engine, expire_on_commit=False)()
+            session = self.get_session()
             session.add_all(chunked_couple_chat)
             session.commit()
             session.close()
@@ -94,7 +99,7 @@ class VectorDB:
             return True
         except Exception as e:
             session.rollback() 
-            print(f"데이터베이스에서 데이터를 가져오는 중 오류 발생: {str(e)}")
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
             return False
         finally:
             if session:
@@ -110,7 +115,7 @@ class VectorDB:
             return True
         except Exception as e:
             session.rollback() 
-            print(f"데이터베이스에서 데이터를 가져오는 중 오류 발생: {str(e)}")
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
             return False
         finally:
             if session:
@@ -126,7 +131,7 @@ class VectorDB:
             return True
         except Exception as e:
             session.rollback() 
-            print(f"데이터베이스에서 데이터를 가져오는 중 오류 발생: {str(e)}")
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
             return False
         finally:
             if session:

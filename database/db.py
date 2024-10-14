@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -5,10 +7,13 @@ from model.data_model import CoupleChat, GomduChat, ReportRequest, ConnectionLog
 from model.db_model import CoupleChatMessage, PetChat, MemberActivity, Couple
 from setting.env_setting import EnvSetting
 from setting.service_config import ServiceConfig
+from setting.logger_setting import logger_setting
 
 class DB:
     def __init__(self) -> None:
         self.set_db()
+        logger_setting()
+        self.logger = logging.getLogger(__name__)
     
     def set_db(self):
         DATABASE_URL = EnvSetting().db_url
@@ -36,7 +41,7 @@ class DB:
                 
             return chat_data
         except Exception as e:
-            print(f"Couple chat load error: {str(e)}")
+            self.logger.error(f"Error in getting couple chat for period: {str(e)}", exc_info=True)
             return []
     
     def get_gomdu_history(self, couple_id:str, user_id:str) -> list[GomduChat]:
@@ -53,7 +58,7 @@ class DB:
             gomdu_chat_history = [gomdu_chat.parse_to_gomdu_chat() for gomdu_chat in gomdu_chat_history]
             return gomdu_chat_history
         except Exception as e:
-            print(f"Gomdu chat load error: {str(e)}")
+            self.logger.error(f"Error in getting gomdu history: {str(e)}", exc_info=True)
             return []
 
     def get_member_activity(self, member_id:str) -> list[ConnectionLog]:
@@ -71,14 +76,14 @@ class DB:
                 return []
             return member_activities
         except Exception as e:
-            print(f"Member activity load error: {str(e)}")
+            self.logger.error(f"Error in getting member activity: {str(e)}", exc_info=True)
             return []
     
     def get_all_connected_couple(self):
         try:
             session = self.get_session()
             query = session.query(Couple).filter(
-                Couple.state == 'CONNECT'
+                Couple.state == ServiceConfig.DB_COUPLE_STATE_CONNECTED.value
             )
             
             connected_couples = query.all()
@@ -87,5 +92,5 @@ class DB:
             connected_couple_ids = [str(connected_couple.couple_id) for connected_couple in connected_couples]
             return connected_couple_ids
         except Exception as e:
-            print(f"Connected Couple Id load error: {str(e)}")
+            self.logger.error(f"Error in getting connected couple: {str(e)}", exc_info=True)
             return []

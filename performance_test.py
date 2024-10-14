@@ -21,6 +21,7 @@ class Tester:
         time_start = time()
         from test.unit.generation_json import GenerationJsonTester
         print('success import GenerationJsonTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
+        from test.unit.reranker import RerankerTester
         #---------------------------------------------------------------------------#
 
         # service test
@@ -45,9 +46,10 @@ class Tester:
             # 'classification_model' : [False, ClassificationModelTester()],
             # 'db'                   : [True, DBTester()],
             # 'generation_json'      : [True, GenerationJsonTester()],
+            'reranker'             : [True, RerankerTester()],
 
             # 'motion_analyzer'      : [True, MotionAnalyzerTester()],
-            'chat_generator'       : [True, GomduChatGeneratorTester()],
+            # 'chat_generator'       : [True, GomduChatGeneratorTester()],
             # 'report_generator'     : [False, ReportGeneratorTester()],
             # 'chunker'              : [True, ChunkerTester()],
         }

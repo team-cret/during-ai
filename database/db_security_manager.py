@@ -1,9 +1,14 @@
 import base64
 import sys
-sys.modules['Crypto'] = __import__('crypto')
+import os
+if os.name == 'nt':
+    sys.modules['Crypto'] = __import__('crypto')
+    from crypto.Cipher import AES
+    from crypto.Util.Padding import unpad, pad
+else:
+    from Crypto.Cipher import AES
+    from Crypto.Util.Padding import unpad, pad
 
-from crypto.Cipher import AES
-from crypto.Util.Padding import unpad, pad
 
 class DBSecurityManager():
     secret_key = b'HOTYE49jV2DpF7iF55p1aVov6vWEaeuq'

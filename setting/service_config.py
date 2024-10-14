@@ -33,8 +33,10 @@ class ServiceConfig(Enum):
     GOMDU_CHAT_LLM_CLASS = 'OpenAITextGenerator'
     GOMDU_CHAT_TTL = 1800
 
-    GOMDU_CHAT_EMBEDDING_MODULE = 'ko_sroberta'
-    GOMDU_CHAT_EMBEDDING_CLASS = 'KoSrobertaTextEmbedding'
+    # GOMDU_CHAT_EMBEDDING_MODULE = 'ko_sroberta'
+    # GOMDU_CHAT_EMBEDDING_CLASS = 'KoSrobertaTextEmbedding'
+    GOMDU_CHAT_EMBEDDING_MODULE = 'openai'
+    GOMDU_CHAT_EMBEDDING_CLASS = 'OpenAITextEmbedding'
     GOMDU_CHAT_EMBEDDING_DIMENSION = 768
 
     GOMDU_CHAT_STREAM_MODE = False
@@ -52,12 +54,13 @@ class ServiceConfig(Enum):
     #-------------------------------------------------------------------------------------------#
     DB_CONNECTION_LOGIN = 'LOGIN'
     DB_CONNECTION_LOGOUT = 'LOGOUT'
+    DB_COUPLE_STATE_CONNECTED = 'CONNECT'
     DB_CURRENT_TYPE = 'dev'
     DB_DEV_SCHEMA_NAME = 'public'
     DB_LIVE_SCHEMA_NAME = 'public'
     DB_RETRIEVAL_TABLE_NAME = 'chunk'
 
-    DB_TEST_SCHEMA_NAME = 'public'
+    DB_TEST_SCHEMA_NAME = 'vectordb'
     DB_TEST_COUPLE_ID = '5701de9e-f3b4-4fdf-8c42-e9e6965cb514'
     DB_TEST_USER_ID_1 = '9c4cf30a-fe60-495a-a21a-741b5010264f'
     DB_TEST_USER_ID_2 = '6b8338b6-abb2-423d-b572-b2b5abaf11bc'
@@ -70,4 +73,9 @@ class ServiceConfig(Enum):
     REPORT_CONCURRENT_TIME_ZONE_UNIT = 60
     REPORT_TYPE_1 = 'SMALL'
     REPORT_TYPE_2 = 'BIG'
+    #-------------------------------------------------------------------------------------------#
+
+    # BASIC
+    #-------------------------------------------------------------------------------------------#
+    CHAT_TYPE_MOTION = 'interaction'
     #-------------------------------------------------------------------------------------------#
