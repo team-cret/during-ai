@@ -19,6 +19,7 @@ def logger_setting():
                     'level': 'DEBUG',
                     'maxBytes': 10485760,  # 10MB
                     'backupCount': 5,
+                    'encoding': 'utf8',
                 },
                 # 'console': {
                 #     'class': 'logging.StreamHandler',

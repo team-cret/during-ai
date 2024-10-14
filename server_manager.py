@@ -1,5 +1,6 @@
 import importlib
 
+from service.gomdu.chunker_v0 import ChunkerV0
 from service.gomdu.gomdu import Gomdu
 from service.report.report_manager import ReportManager
 from service.motion_analysis.motion_analyzer import MotionAnalyzer
@@ -19,3 +20,6 @@ class ServerManager:
         self.motion_analyzer :MotionAnalyzer = analyzer_class()
         self.gomdu           :Gomdu          = Gomdu()
         self.report_manager  :ReportManager  = ReportManager()
+        self.chunker         :ChunkerV0      = ChunkerV0()
+    
+    

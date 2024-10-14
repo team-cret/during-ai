@@ -16,7 +16,7 @@ jobs:
       
       - name: Set up Environment File
         run: |
-          echo "${{ secrets.ENV_FILE }}" > ./setting/default.env
+          echo "${{ secrets.LIVE_ENV_FILE }}" > ./setting/default.env
         shell: bash
 
       - name: Set up Docker Buildx

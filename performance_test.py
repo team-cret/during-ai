@@ -21,6 +21,7 @@ class Tester:
         time_start = time()
         from test.unit.generation_json import GenerationJsonTester
         print('success import GenerationJsonTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
+        from test.unit.reranker import RerankerTester
         #---------------------------------------------------------------------------#
 
         # service test
@@ -34,20 +35,23 @@ class Tester:
         time_start = time()
         from test.services.report_generator import ReportGeneratorTester
         print('success import ReportGeneratorTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
+        from test.services.chunker import ChunkerTester
         #---------------------------------------------------------------------------#
         
         # select targeted test [True <-> False]
         #---------------------------------------------------------------------------#
         time_start = time()
         self.test_setup = {
-            # 'embedding_model'      : [False, EmbeddingModelTester()],
+            # 'embedding_model'      : [True, EmbeddingModelTester()],
             # 'classification_model' : [False, ClassificationModelTester()],
-            # 'db'                   : [False, DBTester()],
+            # 'db'                   : [True, DBTester()],
             # 'generation_json'      : [True, GenerationJsonTester()],
+            'reranker'             : [True, RerankerTester()],
 
             # 'motion_analyzer'      : [True, MotionAnalyzerTester()],
-            'chat_generator'       : [True, GomduChatGeneratorTester()],
+            # 'chat_generator'       : [True, GomduChatGeneratorTester()],
             # 'report_generator'     : [False, ReportGeneratorTester()],
+            # 'chunker'              : [True, ChunkerTester()],
         }
         print('successfully end setup for test' + f'elapsed time : {time() - time_start:.2f} sec')
         #---------------------------------------------------------------------------#

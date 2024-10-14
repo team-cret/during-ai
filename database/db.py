@@ -1,14 +1,19 @@
+import logging
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from model.data_model import CoupleChat, GomduChat, ReportRequest, ConnectionLog
-from model.db_model import CoupleChatMessage, PetChatMessage, MemberActivity
+from model.db_model import CoupleChatMessage, PetChat, MemberActivity, Couple
 from setting.env_setting import EnvSetting
 from setting.service_config import ServiceConfig
+from setting.logger_setting import logger_setting
 
 class DB:
     def __init__(self) -> None:
         self.set_db()
+        logger_setting()
+        self.logger = logging.getLogger(__name__)
     
     def set_db(self):
         DATABASE_URL = EnvSetting().db_url
@@ -22,27 +27,30 @@ class DB:
         try:
             session = self.get_session()
             query = session.query(CoupleChatMessage).filter(
-                CoupleChatMessage.couple_id == report_request.couple_id,
-                CoupleChatMessage.chat_date >= report_request.start_date,
-                CoupleChatMessage.chat_date <= report_request.end_date
-            ).order_by(CoupleChatMessage.couple_chat_id)
+                CoupleChatMessage.couple_id == str(report_request.couple_id),
+                CoupleChatMessage.message_date >= report_request.start_date,
+                CoupleChatMessage.message_date <= report_request.end_date
+            ).order_by(CoupleChatMessage.couple_chat_message_id)
             
             chat_data = query.all()
 
             session.close()
-            chat_data = [couple_chat.parse_to_couple_chat() for couple_chat in chat_data]
+            result_data = []
+            for couple_chat in chat_data:
+                result_data.append(couple_chat.parse_to_couple_chat())
+                
             return chat_data
         except Exception as e:
-            print(f"Couple chat load error: {str(e)}")
+            self.logger.error(f"Error in getting couple chat for period: {str(e)}", exc_info=True)
             return []
     
-    def get_gomdu_history(self, couple_id:str, history_id:int) -> list[GomduChat]:
+    def get_gomdu_history(self, couple_id:str, user_id:str) -> list[GomduChat]:
         try:
             session = self.get_session()
-            query = session.query(PetChatMessage).filter(
-                PetChatMessage.couple_id == str(couple_id),
-                PetChatMessage.pet_chat_history_id == history_id
-            ).order_by(PetChatMessage.pet_chat_id).limit(ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value)
+            query = session.query(PetChat).filter(
+                PetChat.couple_id == str(couple_id),
+                PetChat.member_id == str(user_id)
+            ).order_by(PetChat.pet_chat_id).limit(ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value)
             
             gomdu_chat_history = query.all()
             
@@ -50,7 +58,7 @@ class DB:
             gomdu_chat_history = [gomdu_chat.parse_to_gomdu_chat() for gomdu_chat in gomdu_chat_history]
             return gomdu_chat_history
         except Exception as e:
-            print(f"Gomdu chat load error: {str(e)}")
+            self.logger.error(f"Error in getting gomdu history: {str(e)}", exc_info=True)
             return []
 
     def get_member_activity(self, member_id:str) -> list[ConnectionLog]:
@@ -58,7 +66,7 @@ class DB:
             session = self.get_session()
             query = session.query(MemberActivity).filter(
                 MemberActivity.member_id == member_id
-            ).order_by(MemberActivity.activity_id)
+            ).order_by(MemberActivity.id)
             
             member_activities = query.all()
             
@@ -68,5 +76,21 @@ class DB:
                 return []
             return member_activities
         except Exception as e:
-            print(f"Member activity load error: {str(e)}")
+            self.logger.error(f"Error in getting member activity: {str(e)}", exc_info=True)
+            return []
+    
+    def get_all_connected_couple(self):
+        try:
+            session = self.get_session()
+            query = session.query(Couple).filter(
+                Couple.state == ServiceConfig.DB_COUPLE_STATE_CONNECTED.value
+            )
+            
+            connected_couples = query.all()
+            
+            session.close()
+            connected_couple_ids = [str(connected_couple.couple_id) for connected_couple in connected_couples]
+            return connected_couple_ids
+        except Exception as e:
+            self.logger.error(f"Error in getting connected couple: {str(e)}", exc_info=True)
             return []

@@ -1,29 +1,28 @@
-
-# class VectorDB:
-#     def __init__(self) -> None:
-#         pass
-
-#     def insertData(self, groupId, vectorData):
-#         pass
-
-#     def removeDataByChatId(self, groupId, chatId):
-#         pass
-
-#     def retrieve_data(self, groupId, userData):
-#         return ['', '', '', '', '']
-    
 from datetime import datetime
+import logging
+
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-from model.data_model import CoupleChat, GomduChat, RetrievedData
-from model.db_model import Chunk
+from database.db_security_manager import DBSecurityManager
+from model.data_model import RetrievedData
+from model.db_model import Chunk, ChunkedCoupleChat
 from setting.service_config import ServiceConfig
 from setting.env_setting import EnvSetting
+from setting.logger_setting import logger_setting
+
+db_schema_type = {
+    'test' : ServiceConfig.DB_TEST_SCHEMA_NAME.value,
+    'dev' : ServiceConfig.DB_DEV_SCHEMA_NAME.value,
+    'live' : ServiceConfig.DB_LIVE_SCHEMA_NAME.value,
+}
 
 class VectorDB:
     def __init__(self) -> None:
         self.set_db()
+        self.db_encryptor = DBSecurityManager()
+        logger_setting()
+        self.logger = logging.getLogger(__name__)   
     
     def set_db(self):
         DATABASE_URL = EnvSetting().db_url
@@ -41,7 +40,7 @@ class VectorDB:
             sql = text(
                 f"""
                 SELECT chunk_id, vector <-> :vec AS distance, summary
-                FROM {ServiceConfig.DB_SCHEMA_NAME.value}.{ServiceConfig.DB_RETRIEVAL_TABLE_NAME.value}
+                FROM {db_schema_type[ServiceConfig.DB_CURRENT_TYPE.value]}.{ServiceConfig.DB_RETRIEVAL_TABLE_NAME.value}
                 WHERE couple_id = :couple_id
                 ORDER BY distance 
                 LIMIT :limit
@@ -50,7 +49,7 @@ class VectorDB:
             retrieved_data = session.execute(
                 sql, 
                 {
-                    "limit": ServiceConfig.RETRIEVAL_TOP_K.value, 
+                    "limit": ServiceConfig.DB_RETRIEVAL_TOP_K.value, 
                     "vec": query_vector_sql,
                     "couple_id": couple_id
                 }
@@ -61,13 +60,79 @@ class VectorDB:
                 parsed_data.append(RetrievedData(
                     chunk_id=data.chunk_id,
                     similarity=data.distance,
-                    summary=data.summary,
+                    summary=self.db_encryptor.decode_message(data.summary),
                 ))
 
             session.close()
             return parsed_data
         except Exception as e:
-            print(f"데이터베이스에서 채팅 데이터를 가져오는 중 오류 발생: {str(e)}")
+            session.rollback()
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
             return []
+        finally:
+            if session:
+                session.close()
 
+    def insert_chunks(self, embedded_couple_chat:list[Chunk]) -> bool:
+        try:
+            session = sessionmaker(bind=self.engine, expire_on_commit=False)()
+            session.add_all(embedded_couple_chat)
+            session.commit()
+            session.close()
 
+            return True
+        except Exception as e:
+            session.rollback() 
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
+            return False
+        finally:
+            if session:
+                session.close()
+        
+    def insert_chunked_couple_chat(self, chunked_couple_chat:list[ChunkedCoupleChat]):
+        try:
+            session = self.get_session()
+            session.add_all(chunked_couple_chat)
+            session.commit()
+            session.close()
+
+            return True
+        except Exception as e:
+            session.rollback() 
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
+            return False
+        finally:
+            if session:
+                session.close()
+
+    def delete_all_chunks(self) -> bool:
+        try:
+            session = self.get_session()
+            session.query(Chunk).delete()
+            session.commit()
+            session.close()
+
+            return True
+        except Exception as e:
+            session.rollback() 
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
+            return False
+        finally:
+            if session:
+                session.close()
+    
+    def delete_all_chunked_couple_chat(self) -> bool:
+        try:
+            session = self.get_session()
+            session.query(ChunkedCoupleChat).delete()
+            session.commit()
+            session.close()
+
+            return True
+        except Exception as e:
+            session.rollback() 
+            self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
+            return False
+        finally:
+            if session:
+                session.close()

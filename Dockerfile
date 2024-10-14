@@ -35,5 +35,5 @@ RUN python3.12 -m venv /usr/src/during && \
 COPY . .
 
 # shell 실행
-RUN chmod +x ./server_start.sh
-CMD ["./server_start.sh"]
+RUN chmod +x /usr/src/during-ai/server_start.sh
+ENTRYPOINT ["./server_start.sh"]
