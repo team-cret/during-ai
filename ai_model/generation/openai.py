@@ -23,7 +23,7 @@ class OpenAITextGenerator:
     def generate_text_chat_mode(self, user_id:str, user_prompt:str, retrieved_prompt:list[RetrievedData], history:list[dict], is_stream:bool = False) -> str:
         try:
             gomdu_prompt = GomduPrompt()
-            gomdu_prompt.set_user_id(user_id[:4])
+            gomdu_prompt.set_user_id(user_id[:ServiceConfig.GOMDU_CHAT_USER_ID_LENGTH.value])
 
             processed_history = [
                 {

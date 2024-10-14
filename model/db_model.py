@@ -24,6 +24,7 @@ class CoupleChatMessage(Base):
     message_date = Column(String)
     send_member_id = Column(String)
     couple_id = Column(String)
+    message_date = Column(String)
 
     def parse_to_couple_chat(self):
         return CoupleChat(
@@ -31,7 +32,8 @@ class CoupleChatMessage(Base):
             chat_type=self.message_type,
             message=db_encryptor.decode_message(self.content),
             user_id=str(self.send_member_id),
-            couple_id=str(self.couple_id)
+            couple_id=str(self.couple_id),
+            timestamp=self.message_date
         )
 
 class PetChat(Base):

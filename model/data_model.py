@@ -12,6 +12,7 @@ class CoupleChat(BaseModel):
     message: str = ''
     user_id: str = ''
     couple_id: str = ''
+    timestamp: datetime = datetime.now()
 #---------------------------------------------------#
 
 # Motion
