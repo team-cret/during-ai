@@ -65,11 +65,8 @@ class ChunkerV0:
     
     def automatic_chunking_by_couple(self, couple_id:str):
         couple_chat = self.get_couple_chat(couple_id, self.chunked_row_numbers.get(couple_id, 0))
-        print('success get couple chat')
         chunked_couple_chat = self.chunk_couple_chat(couple_chat)
-        print('success chunking couple chat')
         embedded_couple_chat = self.embed_chunked_couple_chat(chunked_couple_chat)
-        print('success embedding couple chat')
         
         self.update_vectordb_by_couple(couple_id, embedded_couple_chat)
         if self.chunked_row_numbers.get(couple_id) is None:
@@ -132,14 +129,15 @@ class ChunkerV0:
     def embed_chunked_couple_chat(self, chunked_couple_chat:list[list[CoupleChat]]) -> list[ChunkedData]:
         embedded_couple_chat = []
 
-        for chunk in tqdm(chunked_couple_chat):
-            merged_chat = ' '.join([chat.message for chat in chunk])
+        merged_couple_chat = [' '.join([chat.message for chat in chunk]) for chunk in chunked_couple_chat]
+        embedding_couple_chat = self.embedding_model.embed_text_list(merged_couple_chat)
+        for i in range(len(chunked_couple_chat)):
             embedded_couple_chat.append(
                 ChunkedData(
                     chunk_id=self.chunk_id_num,
-                    chunk=merged_chat,
-                    vector=self.embedding_model.embed_text(merged_chat),
-                    couple_chat_ids=[chat.chat_id for chat in chunk]
+                    chunk=merged_couple_chat[i],
+                    vector=embedding_couple_chat[i],
+                    couple_chat_ids=[chat.chat_id for chat in chunked_couple_chat[i]]
                 )
             )
             self.chunk_id_num += 1

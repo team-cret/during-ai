@@ -22,3 +22,10 @@ class KoSrobertaTextEmbedding(Embedding):
         except Exception as e:
             self.logger.error(f"Error in embedding text (ko_sroberta): {str(e)}", exc_info=True)
             raise Exception("Error in embedding text")
+    
+    def embed_text_list(self, text_list:list[str]) -> list[list[float]]:
+        try:
+            return self.embed_model.embed_documents(text_list)
+        except Exception as e:
+            self.logger.error(f"Error in embedding text list (ko_sroberta): {str(e)}", exc_info=True)
+            raise Exception("Error in embedding text list")
