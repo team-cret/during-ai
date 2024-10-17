@@ -8,6 +8,7 @@ class Config(Enum):
     OPENAI_API_KEY = 'OPENAI_API_KEY'
     UPSTAGE_API_KEY = 'UPSTAGE_API_KEY'
     HF_TOKEN = 'HF_TOKEN'
+    ENCRYPTOR_KEY = 'ENCRYPTOR_KEY'
 
     # Key Value File
     #------------------------------------------------#

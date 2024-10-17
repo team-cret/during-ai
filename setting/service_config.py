@@ -47,8 +47,8 @@ class ServiceConfig(Enum):
 
     GOMDU_CHAT_RERANKER_MODULE = 'bge_reranker_v2_m3'
     GOMDU_CHAT_RERANKER_CLASS = 'BgeRerankerV2M3'
-    DB_RETRIEVAL_TOP_K = 15
-    RERANKER_TOP_K = 5
+    DB_RETRIEVAL_TOP_K = 30
+    RERANKER_TOP_K = 10
     #-------------------------------------------------------------------------------------------#
 
     # DB
@@ -61,7 +61,7 @@ class ServiceConfig(Enum):
     DB_LIVE_SCHEMA_NAME = 'public'
     DB_RETRIEVAL_TABLE_NAME = 'chunk'
 
-    DB_TEST_SCHEMA_NAME = 'vectordb'
+    DB_TEST_SCHEMA_NAME = 'vectordbp'
     DB_TEST_COUPLE_ID = '5701de9e-f3b4-4fdf-8c42-e9e6965cb514'
     DB_TEST_USER_ID_1 = '9c4cf30a-fe60-495a-a21a-741b5010264f'
     DB_TEST_USER_ID_2 = '6b8338b6-abb2-423d-b572-b2b5abaf11bc'

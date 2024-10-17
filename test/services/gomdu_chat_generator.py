@@ -28,7 +28,7 @@ class GomduChatGeneratorTester:
             
             chat = GomduChat(
                 user_id=self.user_id,
-                sender='user',
+                sender=0,
                 couple_id=self.couple_id,
                 history_id=self.history_id,
                 message=user_message,

@@ -16,13 +16,15 @@ class DBTester:
     def test(self):
         data = self.db.get_couple_chat_for_period(
             ReportRequest(
-                couple_id = ServiceConfig.DB_TEST_COUPLE_ID.value,
-                start_date = datetime(2022, 1, 1),
-                end_date = datetime(2022, 1, 2),
+                # couple_id = ServiceConfig.DB_TEST_COUPLE_ID.value,
+                couple_id = 'a45b2c57-30e9-407d-b7b2-2bbaec7e224d',
+                start_date = datetime(2020, 1, 1),
+                end_date = datetime(2020, 12, 20),
+                chunked_row_number = 0
             )
         )
         print('couple chat load', '-' * 50)
-        # print(data[0])
+        print(len(data))
         
         print('gomdu history load', '-' * 50)
         data = self.db.get_gomdu_history(ServiceConfig.DB_TEST_COUPLE_ID.value, ServiceConfig.DB_TEST_USER_ID_1.value)
@@ -41,4 +43,15 @@ class DBTester:
         print('member activity load', '-' * 50)
         for d in data:
             print(d)
+        
+        data = self.vectordb.get_last_chunks_for_couple()
+        print('last chunks for couple', '-' * 50)
+        print(len(data))
+        for d in data:
+            print(d.chunk_id)
+        
+        data = self.db.get_all_connected_couple()
+        print('all connected couple', '-' * 50)
+        print(len(data))
+        print(data[0])
         

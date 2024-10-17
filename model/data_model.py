@@ -64,6 +64,7 @@ class ReportRequest(BaseModel):
     start_date:datetime = datetime.now()
     end_date:datetime = datetime.now()
     couple_member_ids:list[str] = []
+    chunked_row_number: int = 0
 
 class Report(BaseModel):
     report_type:str = ''

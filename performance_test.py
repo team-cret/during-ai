@@ -44,9 +44,9 @@ class Tester:
         self.test_setup = {
             # 'embedding_model'      : [True, EmbeddingModelTester()],
             # 'classification_model' : [False, ClassificationModelTester()],
-            # 'db'                   : [True, DBTester()],
+            'db'                   : [True, DBTester()],
             # 'generation_json'      : [True, GenerationJsonTester()],
-            'reranker'             : [True, RerankerTester()],
+            # 'reranker'             : [True, RerankerTester()],
 
             # 'motion_analyzer'      : [True, MotionAnalyzerTester()],
             # 'chat_generator'       : [True, GomduChatGeneratorTester()],
