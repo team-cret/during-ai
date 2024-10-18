@@ -98,7 +98,7 @@ class DB:
             self.logger.error(f"Error in getting member activity: {str(e)}", exc_info=True)
             return []
     
-    def get_all_connected_couple(self):
+    def get_all_connected_couple(self) -> list[str]:
         try:
             session = self.get_session()
             query = session.query(Couple).filter(
@@ -109,7 +109,6 @@ class DB:
             
             session.close()
             connected_couple_ids = [str(connected_couple.couple_id) for connected_couple in connected_couples]
-            print(len(connected_couple_ids))
             return connected_couple_ids
         except Exception as e:
             self.logger.error(f"Error in getting connected couple: {str(e)}", exc_info=True)

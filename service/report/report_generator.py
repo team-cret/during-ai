@@ -1,6 +1,7 @@
 import logging
 
 from database.db import DB
+from database.s3 import S3
 from model.data_model import ReportRequest, CoupleChat, Report
 from service.report.statistical_analyzer import StatisticalAnalyzer
 from service.report.contents_generator import ContentsGenerator
@@ -20,6 +21,7 @@ class ReportGenerator:
         self.contents_generator = ContentsGenerator()
         self.ai_analyzer = AIAnalyzer()
         self.db = DB()
+        self.s3 = S3()
         self.is_making = False
     
     def generate_report(self) -> Report:
@@ -60,8 +62,15 @@ class ReportGenerator:
             self.logger.error(f"Error in deciding report type: {str(e)}", exc_info=True)
             raise Exception("Error in deciding report type")
 
-    def generate_small_report(self):
-        pass
+    def generate_small_report(self) -> None:
+        try:
+            main_event = self.ai_analyzer.retrieve_main_event(self.couple_chat)
+            image = self.contents_generator.generate_image(main_event)
+            url = self.s3.upload_image_file(image, self.report_request)
+            self.report.image = url
+        except Exception as e:
+            self.logger.error(f"Error in generating small report: {str(e)}", exc_info=True)
+            raise Exception("Error in generating small report")
 
     def generate_big_report(self) -> None:
         try:
@@ -86,7 +95,7 @@ class ReportGenerator:
 
     def analyze_by_ai(self) -> None:
         try:
-            ai_report:Report = self.ai_analyzer.analyze_by_ai(self.couple_chat)
+            ai_report:Report = self.ai_analyzer.analyze_by_ai(self.couple_chat, self.report_request.couple_member_ids)
 
             self.report.MBTI = ai_report.MBTI
             self.report.frequently_talked_topic = ai_report.frequently_talked_topic

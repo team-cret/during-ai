@@ -9,6 +9,8 @@ class Config(Enum):
     UPSTAGE_API_KEY = 'UPSTAGE_API_KEY'
     HF_TOKEN = 'HF_TOKEN'
     ENCRYPTOR_KEY = 'ENCRYPTOR_KEY'
+    AWS_ACCESS_KEY = 'AWS_ACCESS_KEY'
+    AWS_SECRET_KEY = 'AWS_SECRET_KEY'
 
     # Key Value File
     #------------------------------------------------#

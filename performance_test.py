@@ -36,6 +36,9 @@ class Tester:
         from test.services.report_generator import ReportGeneratorTester
         print('success import ReportGeneratorTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
         from test.services.chunker import ChunkerTester
+        print('success import ChunkerTester' + f' [elapsed time : {time() - time_start:.2f} sec]')
+        from test.services.s3 import S3Tester
+        print('success import S3Tester' + f' [elapsed time : {time() - time_start:.2f} sec]')
         #---------------------------------------------------------------------------#
         
         # select targeted test [True <-> False]
@@ -44,14 +47,16 @@ class Tester:
         self.test_setup = {
             # 'embedding_model'      : [True, EmbeddingModelTester()],
             # 'classification_model' : [False, ClassificationModelTester()],
-            'db'                   : [True, DBTester()],
+            # 'db'                   : [True, DBTester()],
             # 'generation_json'      : [True, GenerationJsonTester()],
             # 'reranker'             : [True, RerankerTester()],
 
             # 'motion_analyzer'      : [True, MotionAnalyzerTester()],
             # 'chat_generator'       : [True, GomduChatGeneratorTester()],
-            # 'report_generator'     : [False, ReportGeneratorTester()],
+            'report_generator'     : [True, ReportGeneratorTester()],
             # 'chunker'              : [True, ChunkerTester()],
+
+            # 's3_uploader'          : [True, S3Tester()],
         }
         print('successfully end setup for test' + f'elapsed time : {time() - time_start:.2f} sec')
         #---------------------------------------------------------------------------#

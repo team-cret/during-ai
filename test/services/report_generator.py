@@ -6,7 +6,7 @@ from service.report.report_generator import ReportGenerator
 from setting.service_config import ServiceConfig
 
 class ReportGeneratorTester:
-    def __init__(self):
+    def __init__(self): 
         self.setup_for_test()
         self.setup_test_contents()
 
@@ -15,7 +15,7 @@ class ReportGeneratorTester:
 
     def setup_test_contents(self):
         self.test_contents = [
-            {'start' : datetime(2022, 1, 1), 'end' : datetime(2022, 2, 1)},
+            # {'start' : datetime(2022, 1, 10), 'end' : datetime(2022, 2, 1)},
             {'start' : datetime(2022, 2, 1), 'end' : datetime(2022, 2, 2)},
         ]
 

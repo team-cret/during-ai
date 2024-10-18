@@ -46,9 +46,7 @@ CREATE TABLE vectordbp.couple (
 CREATE TABLE vectordbp.member_activity
 (
     active_date timestamp(6) without time zone,
-    activity_id bigint NOT NULL,
-    member_id uuid,
-    active_type character varying(255),
-    CONSTRAINT member_activity_pkey PRIMARY KEY (activity_id),
-    CONSTRAINT member_activity_active_type_check CHECK (active_type::text = ANY (ARRAY['LOGIN'::character varying, 'LOGOUT'::character varying]::text[]))
+    id bigint NOT NULL PRIMARY KEY,
+    member_id UUID,
+    active_type character varying(255)
 );

@@ -47,7 +47,7 @@ class StatisticalAnalyzer:
             self.logger.error(f"Error in analyzing response time zone: {str(e)}", exc_info=True)
             raise Exception("Error in analyzing response time zone")
         
-    def analyze_concurrent_time_zone(self):
+    def analyze_concurrent_time_zone(self) -> None:
         try:
             # couple log generation
             self.couple_logs = {}
@@ -59,6 +59,9 @@ class StatisticalAnalyzer:
             # user_id -> couple range extract
             couple_range = {}
             for user_id, user_logs in self.couple_logs.items():
+                if len(user_logs) == 0:
+                    return
+                
                 if user_logs[0].connection_type == ServiceConfig.DB_CONNECTION_LOGOUT.value:
                     user_logs = [
                         ConnectionLog(
