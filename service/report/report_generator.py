@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 from database.db import DB
 from database.s3 import S3
@@ -26,20 +27,20 @@ class ReportGenerator:
     
     def generate_report(self) -> Report:
         try:
-            # load couple chat
+            self.is_making = True
             self.couple_chat = self.load_couple_chat()
+            self.logger.info(f"[{self.report_request.couple_id}/{self.report_request.start_date} ~ {self.report_request.end_date}] report Success to load couple chat total {len(self.couple_chat)}")
 
-            # decide report type
             report_type = self.decide_report_type()
+            self.logger.info(f'[{self.report_request.couple_id}/{self.report_request.start_date} ~ {self.report_request.end_date}] report type : {report_type}')
 
-            # generate report object
             self.report = Report()
             self.report.report_type = report_type
-
             if report_type == ServiceConfig.REPORT_TYPE_1.value:
                 self.generate_small_report()
             elif report_type == ServiceConfig.REPORT_TYPE_2.value:
                 self.generate_big_report()
+            self.is_making = False
             return self.report
         except Exception as e:
             self.logger.error(f"Error in generating report: {str(e)}", exc_info=True)
@@ -54,9 +55,9 @@ class ReportGenerator:
 
     def decide_report_type(self) -> str:
         try:
-            if len(self.couple_chat) < 500:
+            if self.report_request.end_date - self.report_request.start_date < timedelta(days=7):
                 return ServiceConfig.REPORT_TYPE_1.value
-            elif len(self.couple_chat) >= 500:
+            else:
                 return ServiceConfig.REPORT_TYPE_2.value
         except Exception as e:
             self.logger.error(f"Error in deciding report type: {str(e)}", exc_info=True)

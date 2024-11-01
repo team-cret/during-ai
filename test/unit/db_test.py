@@ -17,9 +17,10 @@ class DBTester:
         data = self.db.get_couple_chat_for_period(
             ReportRequest(
                 # couple_id = ServiceConfig.DB_TEST_COUPLE_ID.value,
-                couple_id = 'a45b2c57-30e9-407d-b7b2-2bbaec7e224d',
-                start_date = datetime(2020, 1, 1),
-                end_date = datetime(2020, 12, 20),
+                # couple_id = 'a45b2c57-30e9-407d-b7b2-2bbaec7e224d',
+                couple_id = '9e6d75c4-1444-4b12-804a-756a40726b38',
+                start_date = datetime(2019, 3, 28, 0, 0, 0),
+                end_date = datetime(2019, 3, 28, 23, 59, 59),
                 chunked_row_number = 0
             )
         )
@@ -44,11 +45,11 @@ class DBTester:
         for d in data:
             print(d)
         
-        data = self.vectordb.get_last_chunks_for_couple()
-        print('last chunks for couple', '-' * 50)
-        print(len(data))
-        for d in data:
-            print(d.chunk_id)
+        # data = self.vectordb.get_last_chunks_for_couple()
+        # print('last chunks for couple', '-' * 50)
+        # print(len(data))
+        # for d in data:
+        #     print(d.chunk_id)
         
         data = self.db.get_all_connected_couple()
         print('all connected couple', '-' * 50)

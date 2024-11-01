@@ -2,6 +2,9 @@ import logging
 from collections import Counter
 from tqdm import tqdm
 
+import uuid
+
+from ai_model.tokenizer.tiktoken_tokenizer import TiktokenTokenizer
 from ai_model.generation.openai import OpenAITextGenerator
 from ai_model.classification.pogjin_roberta import PongjinRobertaTextClassification
 from model.data_model import Report, CoupleChat, AIReportAnalyzeResponse, AIReportMainEventResponse
@@ -10,6 +13,7 @@ from setting.logger_setting import logger_setting
 class AIAnalyzer:
     def __init__(self):
         self.ai_report:Report = Report()
+        self.tokenizer = TiktokenTokenizer()
         logger_setting()
         self.logger = logging.getLogger(__name__)
 
@@ -17,13 +21,10 @@ class AIAnalyzer:
         try: 
             self.couple_chat = couple_chat
             self.couple_member_ids = couple_member_ids
-            # self.analyze_mbti()
-            # self.analyze_frequently_talked_topic()
-            # self.analyze_sweetness_score()
             self.analyze_by_llm_json()
-            print('success to analyze by llm json')
+            self.logger.info("Success to Analyzed by LLM JSON")
             self.analyze_frequency_of_affection()
-            print('sucecss to analyze frequency of affection')
+            self.logger.info("Success to Analyzed frequency of affection by NLI")
             return self.ai_report
         except Exception as e:
             self.logger.error(f"Error in analyzing by AI: {str(e)}", exc_info=True)
@@ -50,23 +51,45 @@ class AIAnalyzer:
                 f'[{chat.user_id[:4]}] : {chat.message}'
                 for chat in self.couple_chat
             ])
-            ai_analyze_response = ai_model.analyze_chat_data(merged_chat)
-            ai_analyze_response:AIReportAnalyzeResponse
-            mbti = ai_analyze_response.MBTI
-            mbti = mbti.split(', ')
-            result_mbti = []
-            for mbt in mbti:
-                mb = mbt.split(':')
-                for user_id in self.couple_member_ids:
-                    if mb[0] == user_id[:4]:
-                        result_mbti.append((user_id, mb[1]))
-                        break
-            self.ai_report.MBTI = result_mbti
-            self.ai_report.sweetness_score = ai_analyze_response.sweetness_score
-            self.ai_report.frequently_talked_topic = list(ai_analyze_response.frequently_talked_topic.split(', '))
+            total_token_length = self.tokenizer.calculate_token_length(merged_chat)
+            max_token = 100_000
+            if total_token_length > max_token:
+                merged_chat = merged_chat[int(len(merged_chat)*(1-max_token/total_token_length)):]
+            iteration = 0
+            while iteration < 3:
+                ai_analyze_response = ai_model.analyze_chat_data(merged_chat)
+                ai_analyze_response:AIReportAnalyzeResponse
+                mbti = ai_analyze_response.MBTI
+                mbti = mbti.split(', ')
+                result_mbti = []
+                for mbt in mbti:
+                    mb = mbt.split(':')
+                    for user_id in self.couple_member_ids:
+                        if mb[0] == user_id[:4]:
+                            result_mbti.append((user_id, mb[1]))
+                            break
+                self.ai_report.MBTI = result_mbti
+                self.ai_report.sweetness_score = ai_analyze_response.sweetness_score
+                self.ai_report.frequently_talked_topic = list(ai_analyze_response.frequently_talked_topic.split(', '))
+                if self.check_parse_correction():
+                    break
+                iteration += 1
         except Exception as e:
             self.logger.error(f"Error in analyzing by LLM JSON: {str(e)}", exc_info=True)
             raise Exception("Error in analyzing by LLM JSON")
+    
+    def check_parse_correction(self) -> bool:
+        try:
+            if len(self.ai_report.MBTI) != 2:
+                return False
+            uuid.UUID(self.ai_report.MBTI[0][0], 4)
+            uuid.UUID(self.ai_report.MBTI[1][0], 4)
+            if int(self.ai_report.sweetness_score) < 0 or int(self.ai_report.sweetness_score) > 100:
+                return False
+            return True
+        except Exception as e:
+            self.logger.error(f"Error in checking parse correction: {str(e)}", exc_info=True)
+            return False
 
     def analyze_mbti(self):
         try:
@@ -91,7 +114,7 @@ class AIAnalyzer:
             )
 
             time_period = self.couple_chat[-1].timestamp - self.couple_chat[0].timestamp
-            self.ai_report.frequency_of_affection = time_period / (Counter(tf_affection)[True] * len(self.couple_chat) / 500)
+            self.ai_report.frequency_of_affection = time_period / ((Counter(tf_affection)[True]+1) * len(self.couple_chat) / 500)
         except Exception as e:
             self.logger.error(f"Error in analyzing frequency of affection: {str(e)}", exc_info=True)
             raise Exception("Error in analyzing frequency of affection")

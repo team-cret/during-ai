@@ -59,8 +59,7 @@ class DB:
             
             return result_data
         except Exception as e:
-            # self.logger.error(f"Error in getting couple chat for period: {str(e)}", exc_info=True)
-            print(e)
+            self.logger.error(f"Error in getting couple chat for period: {str(e)}", exc_info=True)
             return []
     
     def get_gomdu_history(self, couple_id:str, user_id:str) -> list[GomduChat]:

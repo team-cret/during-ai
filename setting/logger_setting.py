@@ -1,6 +1,16 @@
 import logging
 import logging.config
 from logging.handlers import RotatingFileHandler
+import pytz
+from datetime import datetime
+class KSTFormatter(logging.Formatter):
+    def formatTime(self, record, datefmt=None):
+        KST = pytz.timezone('Asia/Seoul')
+        dt = datetime.fromtimestamp(record.created, KST)
+        if datefmt:
+            return dt.strftime(datefmt)
+        else:
+            return dt.isoformat()
 
 def logger_setting():
     logging.config.dictConfig(
@@ -9,6 +19,7 @@ def logger_setting():
             'disable_existing_loggers': False,
             'formatters': {
                 'default': {
+                    '()': KSTFormatter,
                     'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
                 }
             },
