@@ -5,7 +5,8 @@ from openai import OpenAI
 
 from data.gomdu_prompt import GomduPrompt
 from data.motion_analysis_prompt import motion_analysis_prompt
-from model.data_model import CoupleChat, Motion, RetrievedData, MotionJson
+from data.ai_report_prompt import ai_report_prompt, ai_main_event_prompt
+from model.data_model import CoupleChat, Motion, RetrievedData, MotionJson, AIReportAnalyzeResponse, AIReportMainEventResponse
 from setting.config import Config
 from setting.model_config import ModelConfig
 from setting.service_config import ServiceConfig
@@ -23,7 +24,7 @@ class OpenAITextGenerator:
     def generate_text_chat_mode(self, user_id:str, user_prompt:str, retrieved_prompt:list[RetrievedData], history:list[dict], is_stream:bool = False) -> str:
         try:
             gomdu_prompt = GomduPrompt()
-            gomdu_prompt.set_user_id(user_id[:4])
+            gomdu_prompt.set_user_id(user_id[:ServiceConfig.GOMDU_CHAT_USER_ID_LENGTH.value])
 
             processed_history = [
                 {
@@ -77,7 +78,26 @@ class OpenAITextGenerator:
             ],
             response_format=MotionJson,
         )
-        return Motion(
-            motion = result.choices[0].message.parsed.motion,
-            motion_id = result.choices[0].message.parsed.motion_id
+        return result.choices[0].message.parsed
+    
+    def analyze_chat_data(self, chat_document:str) -> str:
+        result = self.client.beta.chat.completions.parse(
+            model='gpt-4o-mini',
+            messages=[
+                {'role' : 'system', 'content' : ai_report_prompt},
+                {'role' : 'user', 'content' : chat_document}
+            ],
+            response_format=AIReportAnalyzeResponse
         )
+        return result.choices[0].message.parsed
+    
+    def analyze_main_event_from_chat(self, chat_document:str) -> str:
+        result = self.client.beta.chat.completions.parse(
+            model='gpt-4o-mini',
+            messages=[
+                {'role' : 'system', 'content' : ai_main_event_prompt},
+                {'role' : 'user', 'content' : chat_document}
+            ],
+            response_format=AIReportMainEventResponse
+        )
+        return result.choices[0].message.parsed

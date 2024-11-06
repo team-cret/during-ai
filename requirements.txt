@@ -7,6 +7,8 @@ anyio==4.5.0
 asttokens==2.4.1
 attrs==24.2.0
 backoff==2.2.1
+boto3==1.35.43
+botocore==1.35.43
 cachetools==5.5.0
 certifi==2024.8.30
 cffi==1.17.1

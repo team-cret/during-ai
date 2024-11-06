@@ -1,6 +1,8 @@
 import logging
+from datetime import timedelta
 
 from database.db import DB
+from database.s3 import S3
 from model.data_model import ReportRequest, CoupleChat, Report
 from service.report.statistical_analyzer import StatisticalAnalyzer
 from service.report.contents_generator import ContentsGenerator
@@ -20,24 +22,25 @@ class ReportGenerator:
         self.contents_generator = ContentsGenerator()
         self.ai_analyzer = AIAnalyzer()
         self.db = DB()
+        self.s3 = S3()
         self.is_making = False
     
     def generate_report(self) -> Report:
         try:
-            # load couple chat
+            self.is_making = True
             self.couple_chat = self.load_couple_chat()
+            self.logger.info(f"[{self.report_request.couple_id}/{self.report_request.start_date} ~ {self.report_request.end_date}] report Success to load couple chat total {len(self.couple_chat)}")
 
-            # decide report type
             report_type = self.decide_report_type()
+            self.logger.info(f'[{self.report_request.couple_id}/{self.report_request.start_date} ~ {self.report_request.end_date}] report type : {report_type}')
 
-            # generate report object
             self.report = Report()
             self.report.report_type = report_type
-
             if report_type == ServiceConfig.REPORT_TYPE_1.value:
                 self.generate_small_report()
             elif report_type == ServiceConfig.REPORT_TYPE_2.value:
                 self.generate_big_report()
+            self.is_making = False
             return self.report
         except Exception as e:
             self.logger.error(f"Error in generating report: {str(e)}", exc_info=True)
@@ -52,16 +55,23 @@ class ReportGenerator:
 
     def decide_report_type(self) -> str:
         try:
-            if len(self.couple_chat) < 500:
+            if self.report_request.end_date - self.report_request.start_date < timedelta(days=7):
                 return ServiceConfig.REPORT_TYPE_1.value
-            elif len(self.couple_chat) >= 500:
+            else:
                 return ServiceConfig.REPORT_TYPE_2.value
         except Exception as e:
             self.logger.error(f"Error in deciding report type: {str(e)}", exc_info=True)
             raise Exception("Error in deciding report type")
 
-    def generate_small_report(self):
-        pass
+    def generate_small_report(self) -> None:
+        try:
+            main_event = self.ai_analyzer.retrieve_main_event(self.couple_chat)
+            image = self.contents_generator.generate_image(main_event)
+            url = self.s3.upload_image_file(image, self.report_request)
+            self.report.image = url
+        except Exception as e:
+            self.logger.error(f"Error in generating small report: {str(e)}", exc_info=True)
+            raise Exception("Error in generating small report")
 
     def generate_big_report(self) -> None:
         try:
@@ -86,7 +96,7 @@ class ReportGenerator:
 
     def analyze_by_ai(self) -> None:
         try:
-            ai_report:Report = self.ai_analyzer.analyze_by_ai(self.couple_chat)
+            ai_report:Report = self.ai_analyzer.analyze_by_ai(self.couple_chat, self.report_request.couple_member_ids)
 
             self.report.MBTI = ai_report.MBTI
             self.report.frequently_talked_topic = ai_report.frequently_talked_topic

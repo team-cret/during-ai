@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 
@@ -15,6 +17,26 @@ db_schema_type = {
 
 db_encryptor = DBSecurityManager()
 
+class BCoupleChatMessage(Base):
+    __tablename__ = 'couple_chat_message'
+    __table_args__ = {'schema': 'vectordb'}
+    couple_chat_id = Column(Integer, primary_key=True)
+    chat_type = Column(String)
+    context = Column(String)
+    chat_date = Column(String)
+    send_member_id = Column(String)
+    couple_id = Column(String)
+
+    def parse_to_couple_chat(self):
+        return CoupleChat(
+            chat_id=self.couple_chat_id,
+            chat_type=self.chat_type,
+            message=self.context,
+            user_id=str(self.send_member_id),
+            couple_id=str(self.couple_id),
+            timestamp=self.chat_date
+        )
+
 class CoupleChatMessage(Base):
     __tablename__ = 'couple_chat_message'
     __table_args__ = {'schema': db_schema_type[ServiceConfig.DB_CURRENT_TYPE.value]}
@@ -31,7 +53,8 @@ class CoupleChatMessage(Base):
             chat_type=self.message_type,
             message=db_encryptor.decode_message(self.content),
             user_id=str(self.send_member_id),
-            couple_id=str(self.couple_id)
+            couple_id=str(self.couple_id),
+            timestamp=self.message_date
         )
 
 class PetChat(Base):
@@ -67,6 +90,13 @@ class ChunkedCoupleChat(Base):
     chunk_id = Column(Integer)
     couple_chat_message_id = Column(Integer)
 
+class ChunkedRowNumber(Base):
+    __tablename__ = 'chunked_row_number'
+    __table_args__ = {'schema': db_schema_type[ServiceConfig.DB_CURRENT_TYPE.value]}
+    chunked_row_number_id = Column(Integer, primary_key=True)
+    row_number = Column(Integer)
+    couple_id = Column(String)
+
 class MemberActivity(Base):
     __tablename__ = 'member_activity'
     __table_args__ = {'schema': db_schema_type[ServiceConfig.DB_CURRENT_TYPE.value]}
@@ -84,7 +114,7 @@ class MemberActivity(Base):
 
 class Couple(Base):
     __tablename__ = 'couple'
-    __table_args__ = {'schema': ServiceConfig.DB_TEST_SCHEMA_NAME.value}
+    __table_args__ = {'schema': db_schema_type[ServiceConfig.DB_CURRENT_TYPE.value]}
     couple_id = Column(String, primary_key=True)
     start_date = Column(String)
     end_date = Column(String)

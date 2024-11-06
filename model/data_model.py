@@ -12,6 +12,7 @@ class CoupleChat(BaseModel):
     message: str = ''
     user_id: str = ''
     couple_id: str = ''
+    timestamp: datetime = datetime.now()
 #---------------------------------------------------#
 
 # Motion
@@ -63,13 +64,14 @@ class ReportRequest(BaseModel):
     start_date:datetime = datetime.now()
     end_date:datetime = datetime.now()
     couple_member_ids:list[str] = []
+    chunked_row_number: int = 0
 
 class Report(BaseModel):
     report_type:str = ''
     image:str = ''
-    MBTI:str = 'INTP'
-    response_time_zone: list = [0 for _ in range(round(24/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
-    concurrent_time_zone: list = [0 for _ in range(round(24/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
+    MBTI:list[tuple[str, str]] = [('31415926-5358-9792-6535-897932384626', 'INTP'), ('43383279-5028-8419-7169-399375105820', 'ESFJ')]
+    response_time_zone: list = [0 for _ in range(round(1440/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
+    concurrent_time_zone: list = [0 for _ in range(round(1440/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
     frequently_talked_topic: list = ['사랑']
     frequently_used_emotion: list = [('', 0) for _ in range(6)]
     frequency_of_affection: timedelta = timedelta(0)
@@ -91,6 +93,14 @@ class Report(BaseModel):
             'sweetness_score' : self.sweetness_score,
             'average_reply_term' : self.average_reply_term,
         }
+
+class AIReportAnalyzeResponse(BaseModel):
+    MBTI:str
+    frequently_talked_topic:str
+    sweetness_score:int
+
+class AIReportMainEventResponse(BaseModel):
+    main_event:str
 #---------------------------------------------------#
 
 # Basic

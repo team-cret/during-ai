@@ -29,7 +29,8 @@ class DB:
             query = session.query(CoupleChatMessage).filter(
                 CoupleChatMessage.couple_id == str(report_request.couple_id),
                 CoupleChatMessage.message_date >= report_request.start_date,
-                CoupleChatMessage.message_date <= report_request.end_date
+                CoupleChatMessage.message_date <= report_request.end_date,
+                CoupleChatMessage.couple_chat_message_id >= report_request.chunked_row_number
             ).order_by(CoupleChatMessage.couple_chat_message_id)
             
             chat_data = query.all()
@@ -39,7 +40,24 @@ class DB:
             for couple_chat in chat_data:
                 result_data.append(couple_chat.parse_to_couple_chat())
                 
-            return chat_data
+            return result_data
+        except Exception as e:
+            self.logger.error(f"Error in getting couple chat for period: {str(e)}", exc_info=True)
+            return []
+    
+    def b_get_couple_chat_for_period(self, report_request:ReportRequest) -> list[CoupleChat]:
+        try:
+            session = self.get_session()
+            from model.db_model import BCoupleChatMessage
+            query = session.query(BCoupleChatMessage).order_by(BCoupleChatMessage.couple_chat_id)
+            
+            chat_data = query.all()
+            session.close()
+            result_data = []
+            for couple_chat in chat_data:
+                result_data.append(couple_chat.parse_to_couple_chat())
+            
+            return result_data
         except Exception as e:
             self.logger.error(f"Error in getting couple chat for period: {str(e)}", exc_info=True)
             return []
@@ -79,7 +97,7 @@ class DB:
             self.logger.error(f"Error in getting member activity: {str(e)}", exc_info=True)
             return []
     
-    def get_all_connected_couple(self):
+    def get_all_connected_couple(self) -> list[str]:
         try:
             session = self.get_session()
             query = session.query(Couple).filter(

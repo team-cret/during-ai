@@ -1,8 +1,9 @@
 import logging
+from datetime import timedelta
+
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-import traceback
 
 from model.data_model import (Report, ReportRequest, CoupleChat, 
                               GomduChat, MotionJson, GomduHistoryId, 
@@ -15,16 +16,6 @@ app = FastAPI()
 
 logger_setting()
 logger = logging.getLogger(__name__)
-
-# import time
-# @app.middleware("http")
-# async def add_process_time_header(request: Request, call_next):
-#     start_time = time.time()
-#     response = await call_next(request)
-#     process_time = float(time.time() - start_time)
-#     response.headers["X-Process-Time"] = str(process_time)
-#     logger.info(f"Request to {request.url.path} took {process_time:.2f} seconds")
-#     return response
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -66,6 +57,7 @@ def generate_gomdu_chat(chat: GomduChat) -> GomduChatResponse:
 def generate_report(report_request: ReportRequest) -> Report:
     try:
         logger.info(f"Generating report for request: {report_request}")
+        report_request.end_date += timedelta(hours=23, minutes=59, seconds=59)
         result = manager.report_manager.generate_report(report_request)
         logger.info(f"Report generated: {result}")
         return result

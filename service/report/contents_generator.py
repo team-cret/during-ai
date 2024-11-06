@@ -1,10 +1,11 @@
-
 from ai_model.generation.dalle3 import DallE3
+from data.ai_report_prompt import image_generation_prompt
 from model.data_model import Report
 from model.data_model import CoupleChat
 
 class ContentsGenerator:
     def __init__(self):
+        self.dalle3 = DallE3()
         pass
 
     def generate_small_report(self):
@@ -13,9 +14,9 @@ class ContentsGenerator:
     def generate_big_report(self):
         pass
     
-    def generate_image(self, couple_chat:list[CoupleChat]) -> Report:
-        # prompt = '채팅 내용을 보고 채팅 내용에 가장 적합한 이미지를 생성해주세요\n' + '\n'.join([f'[{chat.user_id}] : {chat.message}' for chat in couple_chat])
-        prompt = '아래 대화내용을 보고 가장 먼저 떠오르는 이미지를 생성해주세요\n' + '\n'.join([f'[{chat.user_id}] : {chat.message}' for chat in couple_chat])
-        img_path = self.image_generator.generate_image(prompt)
-
-        return Report(image=img_path)
+    def generate_image(self, main_event:str) -> Report:
+        try:
+            image = self.dalle3.generate_image(main_event)
+            return image
+        except Exception as e:
+            raise Exception("Error in generating image")
