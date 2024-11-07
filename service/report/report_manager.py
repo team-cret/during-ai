@@ -26,8 +26,7 @@ class ReportManager:
                 self.make_new_generator(report_request)
 
             if self.generators[report_request.couple_id]['generator'].is_making:
-                self.logger.info(f"Report is already being generated for couple_id: {report_request.couple_id}")
-                return Report()
+                raise Exception("Report is already being generated")
             return self.generators[report_request.couple_id]['generator'].generate_report()
         except Exception as e:
             self.logger.error(f"Error in generating report: {str(e)}", exc_info=True)
