@@ -45,8 +45,8 @@ class ServiceConfig(Enum):
     GOMDU_CHAT_AI_NAME = 1
     GOMDU_CHAT_SYSTEM_NAME = 'system'
 
-    GOMDU_CHAT_RERANKER_MODULE = 'bge_reranker_v2_m3'
-    GOMDU_CHAT_RERANKER_CLASS = 'BgeRerankerV2M3'
+    GOMDU_CHAT_RERANKER_MODULE = 'jina_reranker_v2_base'
+    GOMDU_CHAT_RERANKER_CLASS = 'JinaRerankerV2Base'
     DB_RETRIEVAL_TOP_K = 30
     RERANKER_TOP_K = 10
     #-------------------------------------------------------------------------------------------#
@@ -56,7 +56,7 @@ class ServiceConfig(Enum):
     DB_CONNECTION_LOGIN = 'LOGIN'
     DB_CONNECTION_LOGOUT = 'LOGOUT'
     DB_COUPLE_STATE_CONNECTED = 'CONNECT'
-    DB_CURRENT_TYPE = 'dev'
+    DB_CURRENT_TYPE = 'test'
     DB_DEV_SCHEMA_NAME = 'public'
     DB_LIVE_SCHEMA_NAME = 'public'
     DB_RETRIEVAL_TABLE_NAME = 'chunk'

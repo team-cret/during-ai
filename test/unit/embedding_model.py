@@ -3,6 +3,8 @@ from ai_model.embedding.ko_sroberta import KoSrobertaTextEmbedding
 from ai_model.embedding.openai import OpenAITextEmbedding
 from ai_model.embedding.embedding import Embedding
 from ai_model.embedding.upstage import UpstageTextEmbedding
+from ai_model.embedding.int_float import IntFloatTextEmbedding
+from ai_model.embedding.jina_embedding_v3 import JinaEmbeddingV3TextEmbedding
 
 class EmbeddingModelTester:
     def __init__(self) -> None:
@@ -13,8 +15,10 @@ class EmbeddingModelTester:
         self.embedding_models = {
             'gemini' : GeminiTextEmbedding(),
             'ko_sroberta' : KoSrobertaTextEmbedding(),
-            'upstage' : UpstageTextEmbedding(),
+            # 'upstage' : UpstageTextEmbedding(),
             'openai' : OpenAITextEmbedding(),
+            # 'intfloat' : IntFloatTextEmbedding(),
+            'jina-embedding-v3' : JinaEmbeddingV3TextEmbedding(),
         }
     
     def setup_test_contents(self) -> None:

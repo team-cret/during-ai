@@ -3,6 +3,8 @@ from collections import deque
 import importlib
 import logging
 
+from langfuse.decorators import observe
+
 from database.db import DB
 from database.vectordb import VectorDB
 from model.data_model import GomduChat, RetrievedData, GomduChatResponse
@@ -29,7 +31,7 @@ class Gomdu:
 
     def make_new_generator(self, chat:GomduChat) -> None:
         try:
-            self.generators[(chat.user_id, chat.couple_id)] = TTLCache(maxsize=10, ttl=ServiceConfig.GOMDU_CHAT_TTL.value)
+            self.generators[(chat.user_id, chat.couple_id)] = TTLCache(maxsize=12, ttl=ServiceConfig.GOMDU_CHAT_TTL.value)
             
             generator = self.generators[(chat.user_id, chat.couple_id)]
             generator['llm'] = self.llm_class()
@@ -38,17 +40,22 @@ class Gomdu:
             generator['db'] = DB()
             generator['vector_db'] = VectorDB()
             generator['memory'] = deque(maxlen=ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value)
+            generator['is_making'] = False
         except Exception as e:
             self.logger.error(f"Error in making new generator: {str(e)}", exc_info=True)
             raise Exception("Error in making new generator")
 
-
+    @observe
     def generate_chat(self, chat:GomduChat) -> str:
         try:
             if (chat.user_id, chat.couple_id) not in self.generators:
                 self.make_new_generator(chat)
 
             generator = self.generators[(chat.user_id, chat.couple_id)]
+            if generator['is_making']:
+                raise Exception('Chat is being generated')
+            generator['is_making'] = True
+
             # memory loading
             if len(generator['memory']) == 0:
                 self.get_memory(chat, generator)
@@ -72,6 +79,7 @@ class Gomdu:
             generator['memory'].append({'role' : ServiceConfig.GOMDU_CHAT_USER_NAME.value, 'text' : chat.message})
             generator['memory'].append({'role' : ServiceConfig.GOMDU_CHAT_AI_NAME.value, 'text' : gomdu_response})
 
+            generator['is_making'] = False
             return GomduChatResponse(
                 message = gomdu_response,
             )
@@ -119,9 +127,15 @@ class Gomdu:
         try:
             if not retrieved_data:
                 return []
-            reranked_data, scores = generator['reranker'].rerank_documents(retrieved_data, chat.message)
+            reranked_data = generator['reranker'].rerank_documents(retrieved_data, chat.message)
 
-            return reranked_data[:ServiceConfig.RERANKER_TOP_K.value]
+            reordered_data = deque([])
+            for i, data in enumerate(reranked_data[:ServiceConfig.RERANKER_TOP_K.value][::-1]):
+                if i:
+                    reordered_data.append(data)
+                else:
+                    reordered_data.appendleft(data)
+            return list(reordered_data)
         except Exception as e:
             self.logger.error(f"Error in reranking data: {str(e)}", exc_info=True)
             raise Exception("Error in reranking data")

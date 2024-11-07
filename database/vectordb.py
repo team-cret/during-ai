@@ -124,7 +124,7 @@ class VectorDB:
             if session:
                 session.close()
 
-    def get_chunked_row_numbers(self):
+    def get_chunked_row_numbers(self) -> dict[str, tuple[int, int]]:
         try:
             session = self.get_session()
             query = session.query(ChunkedRowNumber)
@@ -176,6 +176,7 @@ class VectorDB:
             session = self.get_session()
             query = session.query(func.max(Chunk.chunk_id)).scalar()
             session.close()
+
             if query == None:
                 return 0
             return int(query)

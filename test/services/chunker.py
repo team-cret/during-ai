@@ -16,9 +16,9 @@ class ChunkerTester:
         return self.db.get_all_connected_couple()
     
     def test(self):
-        couple_ids = self.couple_id_test()
-        print(len(couple_ids))
-        if len(couple_ids):
-            print(couple_ids[0])
+        # couple_ids = self.couple_id_test()
+        # print(len(couple_ids))
+        # if len(couple_ids):
+        #     print(couple_ids[0])
         
         self.chunker.automatic_chunking()
