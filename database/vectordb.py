@@ -134,7 +134,7 @@ class VectorDB:
             session.close()
             result = {}
             for chunked_row_number in chunked_row_numbers:
-                result[chunked_row_number.couple_id] = (chunked_row_number.chunked_row_number_id, chunked_row_number.row_number)
+                result[str(chunked_row_number.couple_id)] = (chunked_row_number.chunked_row_number_id, chunked_row_number.row_number)
             return result
         except Exception as e:
             self.logger.error(f"Error in getting chunked row number: {str(e)}", exc_info=True)

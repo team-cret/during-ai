@@ -31,9 +31,6 @@ class ChunkerV0:
         print('success find target couple')
         self.chunked_row_numbers = self.find_chunked_row_numbers()
         print('success find chunked row numbers')
-        # self.vectordb.delete_all_chunked_couple_chat()
-        # self.vectordb.delete_all_chunks()
-        # delete last chunk for user
         self.delete_last_chunk_for_user()
         print('success delete last chunk for user')
 
@@ -41,6 +38,7 @@ class ChunkerV0:
         self.chunked_couple_chat_id_num = self.vectordb.get_max_chunked_couple_chat_id() + 1
         self.inserting_chunked_row_numbers = []
         self.updating_chunked_row_numbers = []
+        print(self.chunked_row_numbers)
         self.max_chunked_row_number_id = max([numbers[0] for numbers in self.chunked_row_numbers.values()]) if self.chunked_row_numbers else 1
         print('success get max chunk id and chunked couple chat id')
         print(self.chunk_id_num, self.chunked_couple_chat_id_num, self.max_chunked_row_number_id)
@@ -48,6 +46,8 @@ class ChunkerV0:
         for couple_id in target_couple:
             self.automatic_chunking_by_couple(couple_id)
         
+        print(self.inserting_chunked_row_numbers)
+        print(self.updating_chunked_row_numbers)
         self.insert_chunked_row_number()
         self.update_chunked_row_number()
         print('success insert and update chunked row number')
@@ -67,7 +67,8 @@ class ChunkerV0:
         self.vectordb.delete_chunk_by_chunk_id(chunk_ids)
     
     def automatic_chunking_by_couple(self, couple_id:str):
-        couple_chat = self.get_couple_chat(couple_id, self.chunked_row_numbers.get(couple_id, 0))
+        start_row_number = self.chunked_row_numbers[couple_id][1] if couple_id in self.chunked_row_numbers else 0
+        couple_chat = self.get_couple_chat(couple_id, start_row_number)
         print(f'couple_id : {couple_id} : {len(couple_chat)}')
         chunked_couple_chat = self.chunk_couple_chat(couple_chat)
         embedded_couple_chat = self.embed_chunked_couple_chat(chunked_couple_chat)
@@ -166,6 +167,7 @@ class ChunkerV0:
         chunked_couple_chat = []
         for embedded_chat in embedded_couple_chat:
             for chat_id in embedded_chat.couple_chat_ids:
+                self.chunked_couple_chat_id_num += 1
                 chunked_couple_chat.append(
                     ChunkedCoupleChat(
                         chunked_couple_chat_id=self.chunked_couple_chat_id_num,
@@ -173,9 +175,7 @@ class ChunkerV0:
                         couple_chat_message_id=chat_id
                     )
                 )
-                self.chunked_couple_chat_id_num += 1
         self.vectordb.insert_chunked_couple_chat(chunked_couple_chat)
-        print(chunked_couple_chat[0])
         print(f'len chunked couple chat : {len(chunked_couple_chat)}')
         return True
     
