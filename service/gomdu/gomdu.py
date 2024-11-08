@@ -34,13 +34,13 @@ class Gomdu:
             self.generators[(chat.user_id, chat.couple_id)] = TTLCache(maxsize=12, ttl=ServiceConfig.GOMDU_CHAT_TTL.value)
             
             generator = self.generators[(chat.user_id, chat.couple_id)]
+            generator['is_making'] = False
             generator['llm'] = self.llm_class()
             generator['embedding'] = self.embedding_class()
             generator['reranker'] = self.reranker_class()
             generator['db'] = DB()
             generator['vector_db'] = VectorDB()
             generator['memory'] = deque(maxlen=ServiceConfig.GOMDU_CHAT_MEMORY_SIZE.value)
-            generator['is_making'] = False
         except Exception as e:
             self.logger.error(f"Error in making new generator: {str(e)}", exc_info=True)
             raise Exception("Error in making new generator")
@@ -93,11 +93,10 @@ class Gomdu:
                 chat.couple_id,
                 chat.user_id,
             )
-
             for gomdu_chat in gomdu_history:
                 generator['memory'].append({
-                    'role' : gomdu_chat['sender'],
-                    'text' : gomdu_chat['message']
+                    'role' : gomdu_chat.sender,
+                    'text' : gomdu_chat.message
                 })
         except Exception as e:
             self.logger.error(f"Error in getting memory: {str(e)}", exc_info=True)
