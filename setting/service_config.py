@@ -56,7 +56,7 @@ class ServiceConfig(Enum):
     DB_CONNECTION_LOGIN = 'LOGIN'
     DB_CONNECTION_LOGOUT = 'LOGOUT'
     DB_COUPLE_STATE_CONNECTED = 'CONNECT'
-    DB_CURRENT_TYPE = 'test'
+    DB_CURRENT_TYPE = 'dev'
     DB_DEV_SCHEMA_NAME = 'public'
     DB_LIVE_SCHEMA_NAME = 'public'
     DB_RETRIEVAL_TABLE_NAME = 'chunk'
