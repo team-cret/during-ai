@@ -28,4 +28,4 @@ class GteRerankerBase(Reranker):
         outputs = self.model(**inputs)
         scores = outputs.logits.squeeze().tolist()
 
-        return [documents[i] for i in sorted(range(len(documents)), key=lambda x:scores[x], reverse=True)], sorted(scores)
+        return [documents[i] for i in sorted(range(len(documents)), key=lambda x:scores[x], reverse=True)]

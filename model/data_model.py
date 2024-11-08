@@ -67,16 +67,16 @@ class ReportRequest(BaseModel):
     chunked_row_number: int = 0
 
 class Report(BaseModel):
-    report_type:str = ''
+    report_type:str = 'DEFAULT'
     image:str = ''
     MBTI:list[tuple[str, str]] = [('31415926-5358-9792-6535-897932384626', 'INTP'), ('43383279-5028-8419-7169-399375105820', 'ESFJ')]
     response_time_zone: list = [0 for _ in range(round(1440/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
     concurrent_time_zone: list = [0 for _ in range(round(1440/ServiceConfig.REPORT_RESPONSE_TIME_ZONE_UNIT.value))]
-    frequently_talked_topic: list = ['사랑']
-    frequently_used_emotion: list = [('', 0) for _ in range(6)]
+    frequently_talked_topic: list = []
+    frequently_used_emotion: list = []
     frequency_of_affection: timedelta = timedelta(0)
     number_of_love_words:int = 0
-    sweetness_score:int = 80
+    sweetness_score:int = 0
     average_reply_term:timedelta = timedelta(0)
 
     def parse_to_json(self):

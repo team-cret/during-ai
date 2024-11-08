@@ -1,6 +1,7 @@
 import logging
 from collections import Counter
 from tqdm import tqdm
+from datetime import timedelta
 
 import uuid
 
@@ -77,7 +78,7 @@ class AIAnalyzer:
         except Exception as e:
             self.logger.error(f"Error in analyzing by LLM JSON: {str(e)}", exc_info=True)
             raise Exception("Error in analyzing by LLM JSON")
-    
+
     def check_parse_correction(self) -> bool:
         try:
             if len(self.ai_report.MBTI) != 2:
@@ -107,10 +108,15 @@ class AIAnalyzer:
 
     def analyze_frequency_of_affection(self):
         try:
+            if len(self.couple_chat) == 0:
+                self.ai_report.frequency_of_affection = timedelta(seconds=0)
+                return
             ai_classifier = PongjinRobertaTextClassification()
 
+            from random import random
+            couple_chat = sorted(self.couple_chat, key=lambda x:random())
             tf_affection = ai_classifier.is_affection_batch_classification(
-                [chat.message for chat in self.couple_chat[:500]]
+                [chat.message for chat in couple_chat[:500]]
             )
 
             time_period = self.couple_chat[-1].timestamp - self.couple_chat[0].timestamp

@@ -8,6 +8,7 @@ considered_time = {
     '내일' : (timedelta(days=1), timedelta(days=1)),
     '모레' : (timedelta(days=2), timedelta(days=2)),
     '이번주' : (timedelta(days=0), timedelta(days=6)),
+    '작년': (timedelta(days=-365), timedelta(days=0)),
 }
 
 def parse_considered_time(cur_date:datetime, time_word:str) -> str:

@@ -22,7 +22,7 @@ class BgeRerankerV2M3(Reranker):
         try:
             scores = self.reranker.compute_score([[query, document.original_message] for document in documents])
             
-            return [documents[i] for i in sorted(range(len(documents)), key=lambda x:scores[x], reverse=True)], sorted(scores)
+            return [documents[i] for i in sorted(range(len(documents)), key=lambda x:scores[x], reverse=True)]
         except Exception as e:
             self.logger.error(f"Error in reranking documents: {str(e)}", exc_info=True)
             raise Exception("Error in reranking documents")

@@ -124,7 +124,7 @@ class VectorDB:
             if session:
                 session.close()
 
-    def get_chunked_row_numbers(self):
+    def get_chunked_row_numbers(self) -> dict[str, tuple[int, int]]:
         try:
             session = self.get_session()
             query = session.query(ChunkedRowNumber)
@@ -134,7 +134,7 @@ class VectorDB:
             session.close()
             result = {}
             for chunked_row_number in chunked_row_numbers:
-                result[chunked_row_number.couple_id] = (chunked_row_number.chunked_row_number_id, chunked_row_number.row_number)
+                result[str(chunked_row_number.couple_id)] = (chunked_row_number.chunked_row_number_id, chunked_row_number.row_number)
             return result
         except Exception as e:
             self.logger.error(f"Error in getting chunked row number: {str(e)}", exc_info=True)
@@ -176,6 +176,7 @@ class VectorDB:
             session = self.get_session()
             query = session.query(func.max(Chunk.chunk_id)).scalar()
             session.close()
+
             if query == None:
                 return 0
             return int(query)

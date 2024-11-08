@@ -215,8 +215,11 @@ class StatisticalAnalyzer:
 
     def analyze_average_reply_term(self):
         try:
-            time_period = self.couple_chat[-1].timestamp - self.couple_chat[0].timestamp
-            self.statistical_report.average_reply_term = time_period / len(self.couple_chat)
+            if len(self.couple_chat) == 0:
+                self.statistical_report.average_reply_term = timedelta(seconds=0)
+            else:
+                time_period = self.couple_chat[-1].timestamp - self.couple_chat[0].timestamp
+                self.statistical_report.average_reply_term = time_period / len(self.couple_chat)
         except Exception as e:
             self.logger.error(f"Error in analyzing average reply term: {str(e)}", exc_info=True)
             raise Exception("Error in analyzing average reply term")
