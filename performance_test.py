@@ -53,8 +53,8 @@ class Tester:
 
             # 'motion_analyzer'      : [True, MotionAnalyzerTester()],
             # 'chat_generator'       : [True, GomduChatGeneratorTester()],
-            'report_generator'     : [True, ReportGeneratorTester()],
-            # 'chunker'              : [True, ChunkerTester()],
+            # 'report_generator'     : [True, ReportGeneratorTester()],
+            'chunker'              : [True, ChunkerTester()],
 
             # 's3_uploader'          : [True, S3Tester()],
         }
