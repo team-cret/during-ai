@@ -76,7 +76,7 @@ class PetChat(Base):
         )
 
 class Chunk(Base):
-    __tablename__ = 'chunk'
+    __tablename__ = ServiceConfig.DB_RETRIEVAL_TABLE_NAME.value
     __table_args__ = {'schema': db_schema_type[ServiceConfig.DB_CURRENT_TYPE.value]}
     chunk_id = Column(Integer, primary_key=True)
     vector = Column(String)

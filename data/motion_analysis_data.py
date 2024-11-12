@@ -66,6 +66,7 @@ data = [
     {'contents_type' : 'text', 'label' : '피곤함', 'type' : 0, 'content' : '쉬고싶어'},
     {'contents_type' : 'text', 'label' : '피곤함', 'type' : 0, 'content' : '오늘 정말 피곤해'},
     {'contents_type' : 'text', 'label' : '피곤함', 'type' : 4, 'content' : '오늘 정말 피곤해요'},
+    {'contents_type' : 'text', 'label' : '피곤함', 'type' : 4, 'content' : '오늘 너무 피곤해요ㅠㅠ'},
 
     # # multi interaction
     # 2000 : {'motion' : '포옹하기'},

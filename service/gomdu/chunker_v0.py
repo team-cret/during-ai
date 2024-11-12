@@ -22,7 +22,9 @@ class ChunkerV0:
         self.embedding_class = getattr(module, ServiceConfig.GOMDU_CHAT_EMBEDDING_CLASS.value)
         self.embedding_model = self.embedding_class()
 
-        self.chunk_size = 20
+        self.chunk_size = 26
+        self.ovelap_percent = 0.4
+        self.next_chunk = int(self.chunk_size * self.ovelap_percent)
         self.chunk_id_num = 1
         self.chunked_couple_chat_id_num = 1
     
@@ -89,7 +91,7 @@ class ChunkerV0:
                 ChunkedRowNumber(
                     chunked_row_number_id=self.chunked_row_numbers[couple_id][0],
                     couple_id=couple_id,
-                    row_number=couple_chat[max(0, len(couple_chat) - 10)].chat_id
+                    row_number=couple_chat[max(0, len(couple_chat) - self.next_chunk)].chat_id
                 )
             )
             # update chunked row number
@@ -126,15 +128,15 @@ class ChunkerV0:
         if len(couple_chat) == 0:
             return chunked_couple_chat
         
-        for i in range(0, len(couple_chat), 10):
-            chunked_couple_chat.append(couple_chat[i:min(len(couple_chat), i+10)])
+        for i in range(0, len(couple_chat), self.next_chunk):
+            chunked_couple_chat.append(couple_chat[i:min(len(couple_chat), i+self.chunk_size)])
         
         return chunked_couple_chat
 
     def embed_chunked_couple_chat(self, chunked_couple_chat:list[list[CoupleChat]]) -> list[ChunkedData]:
         embedded_couple_chat = []
 
-        merged_couple_chat = [' '.join([chat.message for chat in chunk]) for chunk in chunked_couple_chat]
+        merged_couple_chat = [(f'[{chunk[0].timestamp} ~ {chunk[-1].timestamp}] ' + ' '.join([chat.message for chat in chunk])) for chunk in chunked_couple_chat]
         embedding_couple_chat = self.embedding_model.embed_text_list(merged_couple_chat)
         for i in range(len(chunked_couple_chat)):
             embedded_couple_chat.append(
@@ -164,19 +166,19 @@ class ChunkerV0:
         print(f'success insert chunk : {couple_id}')
         print(f'len chunk couple chat : {len(chunk_couple_chat)}')
 
-        chunked_couple_chat = []
-        for embedded_chat in embedded_couple_chat:
-            for chat_id in embedded_chat.couple_chat_ids:
-                self.chunked_couple_chat_id_num += 1
-                chunked_couple_chat.append(
-                    ChunkedCoupleChat(
-                        chunked_couple_chat_id=self.chunked_couple_chat_id_num,
-                        chunk_id=embedded_chat.chunk_id,
-                        couple_chat_message_id=chat_id
-                    )
-                )
-        self.vectordb.insert_chunked_couple_chat(chunked_couple_chat)
-        print(f'len chunked couple chat : {len(chunked_couple_chat)}')
+        # chunked_couple_chat = []
+        # for embedded_chat in embedded_couple_chat:
+        #     for chat_id in embedded_chat.couple_chat_ids:
+        #         self.chunked_couple_chat_id_num += 1
+        #         chunked_couple_chat.append(
+        #             ChunkedCoupleChat(
+        #                 chunked_couple_chat_id=self.chunked_couple_chat_id_num,
+        #                 chunk_id=embedded_chat.chunk_id,
+        #                 couple_chat_message_id=chat_id
+        #             )
+        #         )
+        # self.vectordb.insert_chunked_couple_chat(chunked_couple_chat)
+        # print(f'len chunked couple chat : {len(chunked_couple_chat)}')
         return True
     
     def insert_chunked_row_number(self) -> bool:

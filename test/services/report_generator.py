@@ -15,8 +15,20 @@ class ReportGeneratorTester:
 
     def setup_test_contents(self):
         self.test_contents = [
-            {'start' : datetime(2022, 1, 10), 'end' : datetime(2022, 2, 1)},
-            # {'start' : datetime(2022, 2, 1), 'end' : datetime(2022, 2, 2)},
+            # {'start' : datetime(2022, 1, 10), 'end' : datetime(2022, 2, 1)},
+            # {'start' : datetime(2022, 1, 1), 'end' : datetime(2022, 1, 6)},
+            # {'start' : datetime(2022, 2, 1), 'end' : datetime(2022, 2, 6)},
+            # {'start' : datetime(2022, 3, 1), 'end' : datetime(2022, 3, 6)},
+            # {'start' : datetime(2022, 4, 1), 'end' : datetime(2022, 4, 6)},
+            # {'start' : datetime(2022, 5, 1), 'end' : datetime(2022, 5, 6)},
+            # {'start' : datetime(2022, 6, 1), 'end' : datetime(2022, 6, 6)},
+            # {'start' : datetime(2022, 7, 1), 'end' : datetime(2022, 7, 6)},
+            # {'start' : datetime(2022, 8, 1), 'end' : datetime(2022, 8, 6)},
+            # {'start' : datetime(2022, 9, 1), 'end' : datetime(2022, 9, 6)},
+            # {'start' : datetime(2022, 10, 1), 'end' : datetime(2022, 10, 6)},
+            # {'start' : datetime(2022, 11, 1), 'end' : datetime(2022, 11, 6)},
+            # {'start' : datetime(2022, 12, 1), 'end' : datetime(2022, 12, 6)},
+            {'start' : datetime(2022, 12, 21), 'end' : datetime(2022, 12, 27)},
         ]
 
     def test(self):

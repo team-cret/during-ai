@@ -1,10 +1,11 @@
+from time import time
 from ai_model.embedding.gemini import GeminiTextEmbedding
 from ai_model.embedding.ko_sroberta import KoSrobertaTextEmbedding
 from ai_model.embedding.openai import OpenAITextEmbedding
 from ai_model.embedding.embedding import Embedding
-from ai_model.embedding.upstage import UpstageTextEmbedding
 from ai_model.embedding.int_float import IntFloatTextEmbedding
 from ai_model.embedding.jina_embedding_v3 import JinaEmbeddingV3TextEmbedding
+from ai_model.embedding.ko_e5 import KoE5TextEmbedding
 
 class EmbeddingModelTester:
     def __init__(self) -> None:
@@ -15,10 +16,10 @@ class EmbeddingModelTester:
         self.embedding_models = {
             'gemini' : GeminiTextEmbedding(),
             'ko_sroberta' : KoSrobertaTextEmbedding(),
-            # 'upstage' : UpstageTextEmbedding(),
             'openai' : OpenAITextEmbedding(),
             # 'intfloat' : IntFloatTextEmbedding(),
             'jina-embedding-v3' : JinaEmbeddingV3TextEmbedding(),
+            'ko-e5' : KoE5TextEmbedding(),
         }
     
     def setup_test_contents(self) -> None:
@@ -32,6 +33,7 @@ class EmbeddingModelTester:
 
             for test_content in self.test_contents:
                 if test_content['contents_type'] == 'text':
+                    start_time = time()
                     vector = model.embed_text(test_content['content'])
-                    print(f'[{model_name} text embedding] -', len(vector), end=' : ')
+                    print(f'[elapsed time : {time()-start_time:.6f}][{model_name} text embedding] -', len(vector), end=' : ')
                     print(*vector[:1])
