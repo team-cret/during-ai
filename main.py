@@ -9,6 +9,7 @@ from model.data_model import (Report, ReportRequest, CoupleChat,
                               GomduChat, MotionJson, GomduHistoryId, 
                               DeletionResult, GomduChatResponse)
 from setting.logger_setting import logger_setting
+from setting.service_config import ServiceConfig
 from server_manager import ServerManager
 
 manager = ServerManager()
@@ -45,6 +46,8 @@ def analyze_motion(chat: CoupleChat) -> MotionJson:
 @app.post("/api/service/gomdu/chat")
 def generate_gomdu_chat(chat: GomduChat) -> GomduChatResponse:
     try:
+        # chat.user_id = ServiceConfig.DB_TEST_USER_ID_1.value
+        # chat.couple_id = ServiceConfig.DB_TEST_COUPLE_ID.value
         logger.info(f"Generating Gomdu chat for: {chat}")
         result = manager.gomdu.generate_chat(chat)
         logger.info(f"Gomdu chat generated: {result}")
@@ -56,6 +59,7 @@ def generate_gomdu_chat(chat: GomduChat) -> GomduChatResponse:
 @app.post('/api/service/report')
 def generate_report(report_request: ReportRequest) -> Report:
     try:
+        # chat.couple_id = ServiceConfig.DB_TEST_COUPLE_ID.value
         logger.info(f"Generating report for request: {report_request}")
         report_request.end_date += timedelta(hours=23, minutes=59, seconds=59)
         result = manager.report_manager.generate_report(report_request)
