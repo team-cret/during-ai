@@ -12,6 +12,8 @@ class ReportGeneratorTester:
 
     def setup_for_test(self):
         self.couple_id = ServiceConfig.DB_TEST_COUPLE_ID.value
+        # self.couple_id = ServiceConfig.DB_TEST_COUPLE_ID_2.value
+        # self.couple_id = ServiceConfig.DB_TEST_COUPLE_ID_3.value
 
     def setup_test_contents(self):
         self.test_contents = [

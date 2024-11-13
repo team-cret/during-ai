@@ -42,6 +42,14 @@ class ServiceConfig(Enum):
     # GOMDU_CHAT_EMBEDDING_CLASS = 'OpenAITextEmbedding'
     GOMDU_CHAT_EMBEDDING_DIMENSION = 1024
 
+    DB_TEST_COUPLE_ID_2 = ''
+    DB_TEST_USER_ID_3 = ''
+    DB_TEST_USER_ID_4 = ''
+
+    DB_TEST_COUPLE_ID_3 = ''
+    DB_TEST_USER_ID_5 = ''
+    DB_TEST_USER_ID_6 = ''
+
     GOMDU_CHAT_STREAM_MODE = False
     GOMDU_CHAT_USER_NAME = 0
     GOMDU_CHAT_AI_NAME = 1

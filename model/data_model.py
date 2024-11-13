@@ -39,6 +39,9 @@ class GomduChatResponse(BaseModel):
 class GomduHistoryId(BaseModel):
     couple_id:str = ''
     user_id:str = ''
+
+class GomduReWritingQuery(BaseModel):
+    query:str
 #---------------------------------------------------#
 
 # Vector DB
