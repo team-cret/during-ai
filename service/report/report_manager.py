@@ -13,7 +13,7 @@ class ReportManager:
         
     def make_new_generator(self, report_request:ReportRequest):
         try:
-            self.generators[report_request.couple_id] = TTLCache(maxsize=2, ttl=3600)
+            self.generators[report_request.couple_id] = TTLCache(maxsize=2, ttl=7200)
             self.generators[report_request.couple_id]['generator'] = ReportGenerator(report_request)
             self.logger.info(f"Success to make new generator for couple_id: {report_request.couple_id}")
         except Exception as e:

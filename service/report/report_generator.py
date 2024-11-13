@@ -17,13 +17,13 @@ class ReportGenerator:
         self.logger = logging.getLogger(__name__)
 
     def set_report_generator(self, report_request:ReportRequest):
+        self.is_making = False
         self.report_request = report_request
         self.statistical_analyzer = StatisticalAnalyzer()
         self.contents_generator = ContentsGenerator()
         self.ai_analyzer = AIAnalyzer()
         self.db = DB()
         self.s3 = S3()
-        self.is_making = False
     
     def generate_report(self) -> Report:
         try:

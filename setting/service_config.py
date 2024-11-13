@@ -31,7 +31,7 @@ class ServiceConfig(Enum):
     GOMDU_CHAT_MEMORY_SIZE = 10
     GOMDU_CHAT_LLM_MODULE = 'openai'
     GOMDU_CHAT_LLM_CLASS = 'OpenAITextGenerator'
-    GOMDU_CHAT_TTL = 36000
+    GOMDU_CHAT_TTL = 7200
     GOMDU_CHAT_USER_ID_LENGTH = 4
 
     GOMDU_CHAT_EMBEDDING_MODULE = 'ko_e5'
