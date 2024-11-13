@@ -104,12 +104,15 @@ class Gomdu:
 
     def retrieve_data(self, chat:GomduChat, generator:dict) -> list[RetrievedData]:
         try:
-            embedded_chat = self.embed_text(chat, generator)
+            embedded_chat = list(self.embed_text(chat, generator))
             # retrieval optimization
             db_retrieved_data = generator['vector_db'].retrieve_data(chat.couple_id, embedded_chat)
 
             # reranking algorithm
+            from time import time
+            start_time = time()
             reranked_data = self.rerank_data(db_retrieved_data, generator, chat)
+            print('elpsed time :', time() - start_time)
             return reranked_data
         except Exception as e:
             self.logger.error(f"Error in retrieving data: {str(e)}", exc_info=True)
