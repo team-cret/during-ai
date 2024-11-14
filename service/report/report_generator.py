@@ -35,6 +35,9 @@ class ReportGenerator:
             self.logger.info(f'[{self.report_request.couple_id}/{self.report_request.start_date} ~ {self.report_request.end_date}] report type : {report_type}')
 
             self.report = Report()
+            if len(self.couple_chat) == 0:
+                self.is_making = False
+                return self.report
             self.report.report_type = report_type
             if report_type == ServiceConfig.REPORT_TYPE_1.value:
                 self.generate_small_report()
