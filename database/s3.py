@@ -5,6 +5,7 @@ import logging
 
 import boto3
 from botocore.exceptions import NoCredentialsError
+import uuid
 
 from setting.logger_setting import logger_setting
 from setting.service_config import ServiceConfig
@@ -26,7 +27,7 @@ class S3:
             img_byte_arr = io.BytesIO()
             image.save(img_byte_arr, format=image.format)  # 이미지의 원래 포맷 사용 (예: 'JPEG', 'PNG')
             img_byte_arr.seek(0)
-            object_name = f"{report_request.couple_id}/{str(report_request.start_date)}_{str(report_request.end_date)}.png"
+            object_name = f"{report_request.couple_id}/{str(uuid.uuid4())}.png"
             self.s3.put_object(
                 Bucket=ServiceConfig.S3_BUCKET_NAME.value, 
                 Key=object_name, 
