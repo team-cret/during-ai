@@ -8,7 +8,7 @@ class KoE5TextEmbedding:
         self.model = SentenceTransformer("nlpai-lab/KoE5")
 
     def embed_text(self, text:str) -> list[float]:
-        return self.model.encode(['query: ' + text])[0]
+        return list(self.model.encode(['query: ' + text])[0])
 
     def embed_text_list(self, texts:list[str]) -> list[list[float]]:
         texts = ['passage: ' + text for text in texts]

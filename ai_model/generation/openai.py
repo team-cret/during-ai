@@ -6,7 +6,14 @@ from openai import OpenAI
 from data.gomdu_prompt import GomduPrompt
 from data.motion_analysis_prompt import motion_analysis_prompt
 from data.ai_report_prompt import ai_report_prompt, ai_main_event_prompt
-from model.data_model import CoupleChat, Motion, RetrievedData, MotionJson, AIReportAnalyzeResponse, AIReportMainEventResponse
+from model.data_model import (GomduChat, 
+                              CoupleChat, 
+                              Motion, 
+                              RetrievedData, 
+                              MotionJson, 
+                              AIReportAnalyzeResponse, 
+                              AIReportMainEventResponse,
+                              GomduReWritingQuery,)
 from setting.config import Config
 from setting.model_config import ModelConfig
 from setting.service_config import ServiceConfig
@@ -20,16 +27,16 @@ class OpenAITextGenerator:
     
     def set_model(self) -> None:
         self.client = OpenAI(api_key=os.environ[Config.OPENAI_API_KEY.value])
+        self.gomdu_prompt = GomduPrompt()
         
     def generate_text_chat_mode(self, user_id:str, user_prompt:str, retrieved_prompt:list[RetrievedData], history:list[dict], is_stream:bool = False) -> str:
         try:
-            gomdu_prompt = GomduPrompt()
-            gomdu_prompt.set_user_id(user_id[:ServiceConfig.GOMDU_CHAT_USER_ID_LENGTH.value])
+            self.gomdu_prompt.set_user_id(user_id[:ServiceConfig.GOMDU_CHAT_USER_ID_LENGTH.value])
 
             processed_history = [
                 {
                     'role' : 'system',
-                    'content' : gomdu_prompt.gomdu_system_prompt
+                    'content' : self.gomdu_prompt.gomdu_system_prompt
                 }
             ]
         
@@ -101,3 +108,25 @@ class OpenAITextGenerator:
             response_format=AIReportMainEventResponse
         )
         return result.choices[0].message.parsed
+    
+    def get_retrieval_query(self, memories:list[GomduChat]) -> str:
+        try:
+            messages = []
+            for memory in memories:
+                if memory['role'] == ServiceConfig.GOMDU_CHAT_AI_NAME.value:
+                    messages.append({'role' : 'assistant', 'content' : memory['text']})
+                else:
+                    messages.append({'role' : 'user', 'content' : memory['text']})
+            messages.append(
+                {'role' : 'system', 'content' : self.gomdu_prompt.gomdu_retrieval_rewriting_prompt}
+            )
+            result = self.client.beta.chat.completions.parse(
+                model='gpt-4o-mini',
+                messages=messages,
+                response_format=GomduReWritingQuery
+            )
+            # print(f"Retrieval query: {result.choices[0].message.parsed}")
+            return result.choices[0].message.parsed
+        except Exception as e:
+            self.logger.error(f"Error in getting retrieval query: {str(e)}", exc_info=True)
+            raise Exception("Error in getting retrieval query")

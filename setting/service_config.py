@@ -42,6 +42,7 @@ class ServiceConfig(Enum):
     # GOMDU_CHAT_EMBEDDING_CLASS = 'OpenAITextEmbedding'
     GOMDU_CHAT_EMBEDDING_DIMENSION = 1024
 
+
     GOMDU_CHAT_STREAM_MODE = False
     GOMDU_CHAT_USER_NAME = 0
     GOMDU_CHAT_AI_NAME = 1
@@ -67,6 +68,15 @@ class ServiceConfig(Enum):
     DB_TEST_COUPLE_ID = '5701de9e-f3b4-4fdf-8c42-e9e6965cb514'
     DB_TEST_USER_ID_1 = '9c4cf30a-fe60-495a-a21a-741b5010264f'
     DB_TEST_USER_ID_2 = '6b8338b6-abb2-423d-b572-b2b5abaf11bc'
+    
+    DB_TEST_COUPLE_ID_2 = '2dbd7d70-e4f8-4f29-858a-5bd2cb2569d9'
+    DB_TEST_USER_ID_3 = 'ef8e306f-3c9c-4ab2-b0f5-79341b7d6384'
+    DB_TEST_USER_ID_4 = 'ca2d6c1e-2ef3-43d1-a67a-80ee4abdc80a'
+
+    DB_TEST_COUPLE_ID_3 = '60ede5f7-9e4e-44aa-bb34-581fa65b989e'
+    DB_TEST_USER_ID_5 = '75035930-9dd7-4bed-b70e-a5e77f9d1aaf'
+    DB_TEST_USER_ID_6 = 'd6cc9ebe-8214-4f58-948b-d6a2506a3f65'
+    
     DB_TEST_HISTORY_ID = 846264338
     #-------------------------------------------------------------------------------------------#
 
