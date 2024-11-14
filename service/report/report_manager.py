@@ -22,7 +22,7 @@ class ReportManager:
 
     def generate_report(self, report_request:ReportRequest) -> Report:
         try:
-            if report_request.couple_id not in self.generators:
+            if report_request.couple_id not in self.generators or 'generator' not in self.generators[report_request.couple_id]:
                 self.make_new_generator(report_request)
 
             if self.generators[report_request.couple_id]['generator'].is_making:

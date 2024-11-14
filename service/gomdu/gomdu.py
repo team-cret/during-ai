@@ -48,7 +48,7 @@ class Gomdu:
     @observe
     def generate_chat(self, chat:GomduChat) -> str:
         try:
-            if (chat.user_id, chat.couple_id) not in self.generators:
+            if (chat.user_id, chat.couple_id) not in self.generators or 'is_making' not in self.generators[(chat.user_id, chat.couple_id)]:
                 self.make_new_generator(chat)
 
             generator = self.generators[(chat.user_id, chat.couple_id)]

@@ -108,6 +108,7 @@ class AIAnalyzer:
 
     def analyze_frequency_of_affection(self):
         try:
+            rate = 200
             if len(self.couple_chat) == 0:
                 self.ai_report.frequency_of_affection = timedelta(seconds=0)
                 return
@@ -116,11 +117,11 @@ class AIAnalyzer:
             from random import random
             couple_chat = sorted(self.couple_chat, key=lambda x:random())
             tf_affection = ai_classifier.is_affection_batch_classification(
-                [chat.message for chat in couple_chat[:500]]
+                [chat.message for chat in couple_chat[:rate]]
             )
 
             time_period = self.couple_chat[-1].timestamp - self.couple_chat[0].timestamp
-            self.ai_report.frequency_of_affection = time_period / ((Counter(tf_affection)[True]+1) * len(self.couple_chat) / 500)
+            self.ai_report.frequency_of_affection = time_period / ((Counter(tf_affection)[True]+1) * len(self.couple_chat) / rate)
         except Exception as e:
             self.logger.error(f"Error in analyzing frequency of affection: {str(e)}", exc_info=True)
             raise Exception("Error in analyzing frequency of affection")
