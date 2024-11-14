@@ -22,6 +22,9 @@ class ReportManager:
 
     def generate_report(self, report_request:ReportRequest) -> Report:
         try:
+            if report_request.start_date > report_request.end_date:
+                raise Exception("Start date is bigger than end date")
+
             if report_request.couple_id not in self.generators or 'generator' not in self.generators[report_request.couple_id]:
                 self.make_new_generator(report_request)
 

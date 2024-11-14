@@ -109,7 +109,7 @@ class MemberActivity(Base):
         return ConnectionLog(
             user_id=self.member_id,
             connection_type=self.active_type,
-            timestamp=self.active_date
+            timestamp=datetime.strptime(self.active_date, "%Y-%m-%d %H:%M:%S")
         )
 
 class Couple(Base):
