@@ -16,18 +16,18 @@ class ReportGenerator:
         logger_setting()
         self.logger = logging.getLogger(__name__)
 
-    def set_report_generator(self, report_request:ReportRequest):
+    def set_report_generator(self):
         self.is_making = False
-        self.report_request = report_request
         self.statistical_analyzer = StatisticalAnalyzer()
         self.contents_generator = ContentsGenerator()
         self.ai_analyzer = AIAnalyzer()
         self.db = DB()
         self.s3 = S3()
     
-    def generate_report(self) -> Report:
+    def generate_report(self, report_request:ReportRequest) -> Report:
         try:
             self.is_making = True
+            self.report_request = report_request
             self.couple_chat = self.load_couple_chat()
             self.logger.info(f"[{self.report_request.couple_id}/{self.report_request.start_date} ~ {self.report_request.end_date}] report Success to load couple chat total {len(self.couple_chat)}")
 
